@@ -7,7 +7,6 @@ export const DOCS_URL = "https://docs.apso.dev";
 export const GITHUB_URL = "https://github.com/apsoai";
 export const CONTACT_EMAIL = "sales@mavric.tech";
 export const BOOKING_URL = "https://api.leadconnectorhq.com/widget/bookings/apso-business-inquiry";
-export const CONTACT_FORM_ID = "0Q3yEbXgn21YUC0B20MA";
 
 export const NAV_GROUPS = [
   {
