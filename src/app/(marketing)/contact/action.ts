@@ -1,10 +1,12 @@
 "use server";
 
 import { z } from "zod";
+import { CONTACT_TOPICS } from "./topics";
 
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Valid email is required"),
+  topic: z.enum(CONTACT_TOPICS, { message: "Choose a topic" }),
   company: z.string().optional(),
   jobTitle: z.string().optional(),
   message: z.string().min(1, "Message is required"),
@@ -13,6 +15,9 @@ const contactSchema = z.object({
 export type ContactState = {
   success: boolean;
   error?: string;
+  /** Echoed back on success so the confirmation can address the sender. */
+  name?: string;
+  email?: string;
   fieldErrors?: Record<string, string>;
 };
 
@@ -23,6 +28,7 @@ export async function submitContact(
   const raw = {
     name: formData.get("name") as string,
     email: formData.get("email") as string,
+    topic: formData.get("topic") as string,
     company: formData.get("company") as string,
     jobTitle: formData.get("jobTitle") as string,
     message: formData.get("message") as string,
@@ -57,6 +63,7 @@ export async function submitContact(
       text: [
         `Name: ${result.data.name}`,
         `Email: ${result.data.email}`,
+        `Topic: ${result.data.topic}`,
         result.data.company ? `Company: ${result.data.company}` : null,
         result.data.jobTitle ? `Job Title: ${result.data.jobTitle}` : null,
         "",
@@ -66,7 +73,7 @@ export async function submitContact(
         .join("\n"),
     });
 
-    return { success: true };
+    return { success: true, name: result.data.name, email: result.data.email };
   } catch (err) {
     console.error("Contact form error:", err);
     return { success: false, error: "Failed to send message. Please try again." };

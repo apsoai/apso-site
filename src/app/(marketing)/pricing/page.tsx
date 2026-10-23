@@ -1,79 +1,57 @@
 import type { Metadata } from "next";
-import { Cloud, Code2, ServerCog } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { Section } from "@/components/ui/section";
 import { PageHero } from "@/components/marketing/page-hero";
-import { PageCta } from "@/components/marketing/page-cta";
-import { HeroLedger } from "@/components/marketing/hero-ledger";
 import { PricingPlans } from "@/components/marketing/pricing-plans";
+import { SittingDogs } from "@/components/marketing/sitting-dogs";
 
 export const metadata: Metadata = {
   title: "Pricing",
   description: "Generate backend code for free. Add team controls with a workspace plan, choose a tier for each service, or have Apso run DevOps in your own cloud on Business.",
 };
 
+const btn = "inline-flex min-h-12 w-full items-center justify-center rounded-[8px] px-5 text-[15px] font-medium transition-colors sm:w-auto";
+
 export default function PricingPage() {
   return (
     <>
       <PageHero
-        eyebrow="Pricing"
         title="Pay for the automation you need. Keep the backend you build."
         description="Generate and inspect your backend before you commit to infrastructure. Bring your whole team for free, add team controls when you need them, or have Apso run operations in your own cloud without changing the ownership model."
         actions={
           <>
-            <a
-              href="#plans"
-              className="inline-flex min-h-12 items-center justify-center rounded-sm bg-brand px-6 font-display text-[14px] font-semibold text-white transition-colors hover:bg-brand-hover"
-            >
+            <a href="#plans" className={`${btn} bg-brand text-white hover:bg-brand-hover`}>
               Compare plans
             </a>
-            <a
-              href="/contact"
-              className="inline-flex min-h-12 items-center justify-center rounded-sm border border-white/20 px-6 font-display text-[14px] font-semibold text-white transition-colors hover:border-white/45"
-            >
+            <a href="/contact" className={`${btn} border border-line-1 bg-bg-0 text-fg-1 hover:border-fg-5`}>
               Talk to us
             </a>
           </>
         }
-        meta={["No per-seat charge", "Full code ownership", "Your cloud on Business"]}
-        visual={
-          <HeroLedger
-            label="Cost boundary"
-            rows={[
-              { label: "Generate", value: "Start with the schema, APIs, migrations, and service code.", icon: Code2 },
-              { label: "Operate", value: "Add managed compute, backups, domains, monitoring, and logs.", icon: ServerCog },
-              { label: "Choose your cloud", value: "On Business, Apso runs the DevOps in its cloud or in your cloud account.", icon: Cloud },
-            ]}
-            footer="the generated backend remains yours"
-          />
-        }
       />
 
-      <Section id="plans" bg="gray">
+      <PricingPlans />
+
+      <section className="bg-navy py-16 text-white">
         <Container>
-          <div className="mb-10 grid gap-5 border-b border-line-1 pb-8 md:grid-cols-[1fr_auto] md:items-end">
-            <div className="max-w-[700px]">
-              <p className="font-mono text-[10px] uppercase text-brand">Plans</p>
-              <h2 className="mt-3 font-display text-[30px] font-bold leading-tight text-fg-1 md:text-[36px]">
-                Pick a workspace plan, then size each service
+          <div className="flex flex-col gap-8 md:flex-row md:items-center">
+            <div className="flex-1">
+              <h2 className="max-w-[740px] font-display text-[30px] font-extrabold leading-[1.1] md:text-[36px]">
+                Review the backend before you choose how to run it
               </h2>
-              <p className="mt-3 text-[15px] leading-6 text-fg-4">
-                Workspace plans set team controls and who runs operations. Service tiers set the compute for each deployed service. You buy them separately, and generated code stays in your repository on every plan.
+              <p className="mt-4 max-w-[740px] text-[16px] leading-[1.6] text-[#D1D5DB]">
+                Build the schema with your agent, inspect the generated service, and select the operating model that fits your team.
               </p>
+              <a
+                href="/contact"
+                className="mt-4 inline-flex min-h-12 items-center justify-center rounded-[8px] bg-bg-0 px-5 text-[15px] font-medium text-fg-1 transition-colors hover:bg-bg-2"
+              >
+                Ask a pricing question
+              </a>
             </div>
-            <p className="font-mono text-[11px] text-fg-5">Prices shown in USD</p>
+            <SittingDogs width={168} className="shrink-0 self-center md:mr-6 lg:mr-[135px]" />
           </div>
-          <PricingPlans />
         </Container>
-      </Section>
-
-      <PageCta
-        eyebrow="Start with the output"
-        title="Review the backend before you choose how to run it"
-        description="Build the schema with your agent, inspect the generated service, and select the operating model that fits your team."
-        secondaryLabel="Ask a pricing question"
-        secondaryHref="/contact"
-      />
+      </section>
     </>
   );
 }
