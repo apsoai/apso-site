@@ -3,17 +3,17 @@ title: "Apso vs Hasura"
 description: "Hasura puts a federated GraphQL API over data you already have. Apso generates the backend service itself. This guide covers where each one fits, and what adding a feature looks like on both."
 competitor: "Hasura"
 date: "2026-10-23"
+order: 5
 ---
 
 Hasura and Apso both save you from hand-writing API boilerplate, but they start from opposite ends. Hasura DDN puts a governed GraphQL API over databases and services you already run, and federates them into one supergraph. Apso starts from a schema your agent writes and generates the backend service: the database tables, the REST API, the access guards and the migrations, as code in your repository.
 
 So the first question is simple. Do you have data sources to unify, or do you have a product to build?
 
-## The short answer
-
-**Choose Hasura** when you already have databases and services, GraphQL is the contract your clients want, and you need one governed API across several data sources.
-
-**Choose Apso** when you are building a new product or a new service, an agent is doing much of the work, and you want each change to produce the same kind of backend code your team can read and extend.
+<ShortAnswer>
+  <Choice title="Choose Hasura when">You already have databases and services, GraphQL is the contract your clients want, and you need one governed API across several data sources.</Choice>
+  <Choice title="Choose Apso when" highlight>You are building a new product or a new service, an agent is doing much of the work, and you want each change to produce the same kind of backend code your team can read and extend.</Choice>
+</ShortAnswer>
 
 ## What each change costs
 
@@ -69,11 +69,15 @@ Then build and deploy the supergraph.
 - **You want declarative, deny-by-default permissions.** Hasura's role model is mature and fails closed.
 - **The database already exists.** Hasura adds an API without changing who owns the schema.
 
+<KeepBand>
+
 ## What you keep if you leave
 
 **Leaving Hasura**, your data never moved, because Hasura connects to your own databases. What you rebuild is the API layer: the permission metadata, the GraphQL contract your clients use, and the wiring around your connectors. Running Hasura's data plane on your own infrastructure (Private DDN) requires an Enterprise agreement.
 
 **Leaving Apso**, the backend is standard NestJS, FastAPI or Gin code in your repository with no Apso runtime, and it runs with Docker or the framework's tooling. You give up Apso's infrastructure automation: provisioning and hosting with managed Postgres, environment management, dashboard logs and data views, and `apso deploy`. Exporting gives you the application code. The infrastructure automation is the part you pay for.
+
+</KeepBand>
 
 ## Bottom line
 

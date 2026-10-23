@@ -3,8 +3,7 @@ import type { Metadata } from "next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { getContentBySlug, getContentSlugs } from "@/lib/content";
-import { mdxComponents } from "@/components/content/mdx-components";
-import { MdxLayout } from "@/components/content/mdx-layout";
+import { CompareLayout, compareMdxComponents } from "@/components/content/compare-layout";
 import type { CompareFrontmatter } from "@/types/content";
 
 interface PageProps {
@@ -31,19 +30,17 @@ export default async function ComparePage({ params }: PageProps) {
   if (!item) notFound();
 
   return (
-    <MdxLayout
+    <CompareLayout
       title={item.frontmatter.title}
       description={item.frontmatter.description}
-      breadcrumbs={[
-        { label: "Compare", href: "/compare" },
-        { label: `Apso vs ${item.frontmatter.competitor}` },
-      ]}
+      competitor={item.frontmatter.competitor}
+      date={item.frontmatter.date}
     >
       <MDXRemote
         source={item.content}
-        components={mdxComponents}
+        components={compareMdxComponents}
         options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
       />
-    </MdxLayout>
+    </CompareLayout>
   );
 }

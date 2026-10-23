@@ -3,17 +3,17 @@ title: "Apso vs Appwrite"
 description: "Appwrite is an open-source backend platform you can run anywhere. Apso generates the backend as code in your repository. This guide covers where each fits, and what adding a feature looks like on both."
 competitor: "Appwrite"
 date: "2026-10-23"
+order: 4
 ---
 
 Appwrite and Apso both answer the lock-in worry, in different ways. Appwrite is an open-source backend platform, licensed BSD-3-Clause, that you can use on Appwrite Cloud or run yourself. Auth, databases, storage, functions, realtime and messaging come in one product. Apso is a generator: your agent describes the data model in a schema file, and Apso writes the backend service as TypeScript, Python or Go code in your repository.
 
 With Appwrite you own the platform. With Apso you own the code. That difference decides most of what follows.
 
-## The short answer
-
-**Choose Appwrite** when you want a full backend platform with realtime, storage and messaging built in, and you value being able to self-host the same product you use in the cloud.
-
-**Choose Apso** when you want the backend itself to be ordinary code your team reviews and extends, an agent is making most of the changes, and each change should follow the same pattern as the last.
+<ShortAnswer>
+  <Choice title="Choose Appwrite when">You want a full backend platform with realtime, storage and messaging built in, and you value being able to self-host the same product you use in the cloud.</Choice>
+  <Choice title="Choose Apso when" highlight>You want the backend itself to be ordinary code your team reviews and extends, an agent is making most of the changes, and each change should follow the same pattern as the last.</Choice>
+</ShortAnswer>
 
 ## What each change costs
 
@@ -74,11 +74,15 @@ Apso's MCP server designs and validates the schema, generates code and diagnoses
 - **Your team works in many languages.** Functions support 17 runtimes.
 - **You are moving off Firebase or Supabase.** Appwrite's migration tool imports from both.
 
+<KeepBand>
+
 ## What you keep if you leave
 
 **Leaving Appwrite** is easier than leaving most platforms, because you can self-host it. Leaving the platform entirely means rebuilding your permissions, functions and the SDK calls in your app on whatever comes next.
 
 **Leaving Apso**, the backend is already standard NestJS, FastAPI or Gin code in your repository with no Apso runtime, and it runs with Docker or the framework's tooling. You give up Apso's infrastructure automation: provisioning and hosting with managed Postgres, environment management, dashboard logs and data views, and `apso deploy`. Exporting gives you the application code. The infrastructure automation is the part you pay for.
+
+</KeepBand>
 
 ## Bottom line
 

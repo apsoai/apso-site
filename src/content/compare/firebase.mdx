@@ -3,17 +3,17 @@ title: "Apso vs Firebase"
 description: "Firebase is built for mobile apps with realtime and offline sync. This guide covers what changes when an AI-built app on Firebase needs its second feature, its second tenant, and a backend your team owns."
 competitor: "Firebase"
 date: "2026-10-23"
+order: 3
 ---
 
 Firebase gets a mobile or web app running without designing a backend at all. Firestore stores the data, Firebase Auth signs people in, and Security Rules decide who can read what. For a first version, especially on mobile, that is hard to beat.
 
 The question this page answers is what happens after the first version: when the app has paying customers, the data turns relational, an agent is writing most of the changes, and each change has to follow the same rules as the last one.
 
-## The short answer
-
-**Choose Firebase** when you are building a mobile-first app, offline sync and realtime updates matter, and your team is comfortable writing and testing Security Rules for every path in the database.
-
-**Choose Apso** when you are building B2B or multi-tenant software on relational data, an agent is making most of the changes, and you want the backend to be TypeScript, Python or Go code in your own repository.
+<ShortAnswer>
+  <Choice title="Choose Firebase when">You are building a mobile-first app, offline sync and realtime updates matter, and your team is comfortable writing and testing Security Rules for every path in the database.</Choice>
+  <Choice title="Choose Apso when" highlight>You are building B2B or multi-tenant software on relational data, an agent is making most of the changes, and you want the backend to be TypeScript, Python or Go code in your own repository.</Choice>
+</ShortAnswer>
 
 ## Where the second feature goes wrong on Firebase
 
@@ -80,11 +80,15 @@ Apso's MCP server designs and validates the schema, generates code and diagnoses
 - **Realtime updates.** Listeners on documents and queries are built in.
 - **Everything in one console.** Auth, hosting, messaging, analytics and crash reporting sit together on Google Cloud.
 
+<KeepBand>
+
 ## What you keep if you leave
 
 **Leaving Firebase**, managed Firestore export writes your data to Cloud Storage and requires the Blaze plan. You then rebuild your Security Rules, reshape document data for whatever comes next, and replace the Firebase SDK calls in your app. Firebase is a hosted Google service, so there is no self-hosted Firebase to move to.
 
 **Leaving Apso**, the backend is standard NestJS, FastAPI or Gin code in your repository with no Apso runtime, and it runs with Docker or the framework's tooling. You give up Apso's infrastructure automation: provisioning and hosting with managed Postgres, environment management, dashboard logs and data views, and `apso deploy`. Exporting gives you the application code. The infrastructure automation is the part you pay for.
+
+</KeepBand>
 
 ## Bottom line
 

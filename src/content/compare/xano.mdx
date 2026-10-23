@@ -3,17 +3,17 @@ title: "Apso vs Xano"
 description: "Xano builds backends visually, and its AI agent can build them for you. Apso turns your agent's intent into backend code you own. This guide covers where each fits, and what adding a feature looks like on both."
 competitor: "Xano"
 date: "2026-10-23"
+order: 6
 ---
 
 Xano is a Postgres-based backend platform with a visual API builder, its own XanoScript language, and an AI agent that can build tables and endpoints for you. It lets people who do not write backend code ship real APIs, and it is good at it.
 
 Apso is for teams that want the result to be code. Your agent describes the data model in a schema file, and Apso writes the backend as TypeScript, Python or Go in your repository, where it goes through the same review as the rest of your product.
 
-## The short answer
-
-**Choose Xano** when the people building the backend are not backend developers, a visual builder is the right working surface for your team, and you are happy for the platform to be the source of truth.
-
-**Choose Apso** when developers own the product, an agent is making most of the changes, and you want every change reviewed as code in a pull request before it reaches users.
+<ShortAnswer>
+  <Choice title="Choose Xano when">The people building the backend are not backend developers, a visual builder is the right working surface for your team, and you are happy for the platform to be the source of truth.</Choice>
+  <Choice title="Choose Apso when" highlight>Developers own the product, an agent is making most of the changes, and you want every change reviewed as code in a pull request before it reaches users.</Choice>
+</ShortAnswer>
 
 ## Where the second feature goes wrong on Xano
 
@@ -68,11 +68,15 @@ The Xano Agent speeds this up, and it has "full access to your workspace." It sh
 - **Multi-tenant admin tooling.** Xano's Tenant Center manages tenants from the platform.
 - **You build MCP servers.** Xano can host MCP servers built in the same workspace.
 
+<KeepBand>
+
 ## What you keep if you leave
 
 **Leaving Xano**, you can export your data and an OpenAPI description of your endpoints. The logic in function stacks and XanoScript has to be rebuilt in whatever comes next. Running Xano outside Xano Cloud requires an Enterprise plan.
 
 **Leaving Apso**, the backend is already standard NestJS, FastAPI or Gin code in your repository with no Apso runtime, and it runs with Docker or the framework's tooling. You give up Apso's infrastructure automation: provisioning and hosting with managed Postgres, environment management, dashboard logs and data views, and `apso deploy`. Exporting gives you the application code. The infrastructure automation is the part you pay for.
+
+</KeepBand>
 
 ## Bottom line
 

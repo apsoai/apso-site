@@ -3,6 +3,7 @@ title: "Apso vs letting your agent write the backend"
 description: "Claude Code, Codex and Cursor can write a backend from scratch. This guide covers what changes by the tenth feature, where Apso fits alongside the agent you already use, and when the agent alone is the better choice."
 competitor: "Agent-written code"
 date: "2026-10-23"
+order: 1
 ---
 
 The most common alternative to Apso is not another platform. It is asking your coding agent to write the backend itself: the controllers, the queries, the auth checks and the migrations. For the first version this works well, and it costs almost nothing.
@@ -11,11 +12,10 @@ The trouble starts later. Every change is generated fresh from a prompt and what
 
 Apso does not replace your agent. It gives the agent a different job.
 
-## The short answer
-
-**Let the agent write it by hand** for prototypes, internal tools with one tenant, and logic that is specific to your product.
-
-**Use Apso with your agent** when the app has users, an agent makes changes every week, and the same rules (tenant isolation, auth, validation, migrations) have to hold on every entity, including the ones added next month.
+<ShortAnswer>
+  <Choice title="Let the agent write it by hand">For prototypes, internal tools with one tenant, and logic that is specific to your product.</Choice>
+  <Choice title="Use Apso with your agent" highlight>When the app has users, an agent makes changes every week, and the same rules (tenant isolation, auth, validation, migrations) have to hold on every entity, including the ones added next month.</Choice>
+</ShortAnswer>
 
 ## What the research says about the second feature
 
