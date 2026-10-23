@@ -9,6 +9,8 @@ import { HowItWorks } from "@/components/sections/how-it-works";
 import { SocialProof } from "@/components/sections/social-proof";
 import { CtaBand } from "@/components/sections/cta-band";
 import { JsonLd } from "@/components/seo/json-ld";
+import { HomeMotion } from "@/components/home/home-motion";
+import "@/components/home/home.css";
 import { organizationSchema, softwareApplicationSchema } from "@/lib/schema";
 
 export default function HomePage() {
@@ -16,7 +18,7 @@ export default function HomePage() {
     <>
       <JsonLd data={[organizationSchema(), softwareApplicationSchema()]} />
       <Header />
-      <main>
+      <main className="hm">
         <Hero />
         <StarterBackends />
         <FullStack />
@@ -25,6 +27,7 @@ export default function HomePage() {
         <FeatureGrid />
         <SocialProof />
         <CtaBand />
+        <HomeMotion />
       </main>
       <Footer />
     </>

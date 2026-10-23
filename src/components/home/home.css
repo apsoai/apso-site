@@ -1,0 +1,220 @@
+/* Homepage motion. Ported from the approved hero motion prototype; every rule is scoped to .hm.
+   Static layout lives in Tailwind on the section components; these rules cover the animated pieces. */
+.hm {
+  --hm-panel: #0b1220;
+  --hm-panel-2: #111a2e;
+  --hm-panel-line: #1e293b;
+  --hm-panel-ink: #e2e8f0;
+  --hm-panel-muted: #64748b;
+  --hm-panel-soft: #94a3b8;
+  --hm-line: #e2e8f0;
+  --hm-green: #4ade80;
+  --hm-amber: #fbbf24;
+  --hm-sky: #60a5fa;
+  --hm-string: #86efac;
+  --hm-key: #93c5fd;
+  --hm-fn: #c4b5fd;
+  --hm-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dog: every expression is stacked in one box and data-mood picks which is visible. */
+.hm .dog { position: relative; transform-origin: 50% 92%; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.hm .dog > span { position: absolute; inset: 0; opacity: 0; transition: opacity 240ms var(--hm-ease); }
+.hm .dog svg { width: 100%; height: 100%; display: block; }
+.hm .dog[data-mood="sleep"] .m-sleep, .hm .dog[data-mood="curious"] .m-curious, .hm .dog[data-mood="active"] .m-active,
+.hm .dog[data-mood="happy"] .m-happy, .hm .dog[data-mood="relaxed"] .m-relaxed { opacity: 1; }
+.hm .dog[data-mood="sleep"], .hm .dog.dozing { animation: hm-breathe 3.2s ease-in-out infinite; }
+.hm .dog.dozing { --b: 0.1; }
+.hm .dog.hop { animation: hm-hop 560ms var(--hm-ease); }
+@keyframes hm-breathe { 50% { transform: scale(1.025, 0.985); } }
+@keyframes hm-hop { 40% { transform: translateY(-14px); } 70% { transform: translateY(0) scale(1.03, 0.97); } }
+/* Rigged parts. --lx/--ly (-1..1) is where the dog looks, set from JS. Eyes move fast, the head follows slower. */
+.hm .dog .hd, .hm .dog .eye, .hm .dog .ear { transform-box: fill-box; }
+.hm .dog .hd { transform-origin: 50% 90%; translate: calc(var(--lx, 0) * 4px) calc(var(--ly, 0) * 2.5px); rotate: calc(var(--lx, 0) * 5deg + var(--tilt, 0deg)); transition: translate 420ms var(--hm-ease), rotate 420ms var(--hm-ease); }
+.hm .dog .eye { transform-origin: center; translate: calc(var(--lx, 0) * 3.5px) calc(var(--ly, 0) * 2.5px); scale: 1 var(--b, 1); transition: translate 110ms ease-out, scale 70ms; }
+.hm .dog.blink { --b: 0.1; }
+.hm .dog[data-mood="curious"] { --tilt: -11deg; }
+.hm .dog .ear { transition: rotate 220ms var(--hm-ease); }
+.hm .dog .el { transform-origin: 100% 0; }
+.hm .dog .er { transform-origin: 0 0; }
+.hm .dog .m-happy .el { transform-origin: 70% 100%; }
+.hm .dog .m-happy .er { transform-origin: 30% 100%; }
+.hm .dog.perk .el { rotate: 14deg; }
+.hm .dog.perk .er { rotate: -14deg; }
+.hm .dog.tw-l .el { animation: hm-twl 340ms var(--hm-ease); }
+.hm .dog.tw-r .er { animation: hm-twr 340ms var(--hm-ease); }
+@keyframes hm-twl { 30% { transform: rotate(20deg); } 60% { transform: rotate(-5deg); } }
+@keyframes hm-twr { 30% { transform: rotate(-20deg); } 60% { transform: rotate(5deg); } }
+.hm .dog.nod .hd { animation: hm-nod 300ms var(--hm-ease); }
+.hm .dog.pant .hd { animation: hm-pant 210ms ease-in-out 7; }
+@keyframes hm-nod { 45% { transform: translateY(4px) rotate(3deg); } }
+@keyframes hm-pant { 50% { transform: translateY(2px); } }
+
+/* Side-view walker: the web app loader's walk cycle, played with lottie-web. Frame 6 is the standing pose. */
+.hm .walker .lot { width: 100%; height: 100%; }
+.hm .walker[data-dir="-1"] .lot { transform: scaleX(-1); }
+.hm .walker.dig .lot { animation: hm-scuff 160ms ease-in-out infinite alternate; }
+@keyframes hm-scuff { to { translate: 0 1.5px; } }
+
+/* The idea forming: a thought bubble draws a small entity diagram while the intent types. */
+.hm .thought { position: absolute; left: 116px; bottom: 56px; width: 92px; padding: 8px 10px; background: #fff; border: 1px solid var(--hm-line); border-radius: 14px; box-shadow: 0 10px 24px -12px rgba(15, 23, 42, 0.35); opacity: 0; scale: 0.6; transform-origin: 0 100%; transition: opacity 260ms var(--hm-ease), scale 420ms var(--hm-ease); pointer-events: none; }
+.hm .thought::before, .hm .thought::after { content: ""; position: absolute; background: #fff; border: 1px solid var(--hm-line); border-radius: 50%; }
+.hm .thought::before { width: 10px; height: 10px; left: -6px; bottom: -10px; }
+.hm .thought::after { width: 6px; height: 6px; left: -14px; bottom: -18px; }
+.hm .thought svg { display: block; width: 100%; height: auto; }
+.hm .thought rect { fill: #eff6ff; stroke: #2563eb; stroke-width: 1.5; opacity: 0; transition: opacity 300ms; }
+.hm .thought path { stroke: #2563eb; stroke-width: 1.5; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 600ms var(--hm-ease); }
+.hm .thought.on { opacity: 1; scale: 1; }
+.hm .thought.s1 rect:nth-of-type(1), .hm .thought.s2 rect:nth-of-type(-n+2), .hm .thought.s3 rect { opacity: 1; }
+.hm .thought.s2 path:nth-of-type(1), .hm .thought.s3 path { stroke-dashoffset: 0; }
+.hm .thought.pop { opacity: 0; scale: 1.25; transition-duration: 380ms; }
+
+/* Hero pack and band yard: front-facing dogs cloned from a template, so each keeps its blink, gaze and ears. */
+.hm .facepack { position: absolute; left: 0; bottom: calc(100% + 18px); z-index: 1; width: calc(100px * var(--k) * var(--m, 1)); height: calc(142px * var(--k) * var(--m, 1)); translate: var(--px, 0px) 0; transition: translate var(--dur, 0ms) linear; }
+.hm .facepack.bound > span { animation: hm-bound 300ms ease-in-out infinite; }
+@keyframes hm-bound { 50% { transform: translateY(-12px); } }
+.hm .yard { position: absolute; left: 0; right: 0; bottom: 0; height: 150px; pointer-events: none; }
+.hm .yardface { position: absolute; left: 0; bottom: 4px; width: calc(100px * var(--k)); height: calc(142px * var(--k)); translate: var(--px, 0px) var(--py, 0px); transition: translate 700ms var(--hm-ease); pointer-events: auto; }
+.hm .bit, .hm .confetti { position: absolute; left: 0; top: 0; pointer-events: none; z-index: 3; }
+.hm .bit { width: 4px; height: 4px; border-radius: 1px; }
+.hm .ep { transition: border-color 300ms, background 300ms; }
+.hm .ep.hit { border-color: var(--hm-green); background: rgba(74, 222, 128, 0.1); }
+
+/* Hero stage: the loader idea. A progress track on top of the panel; the dog walks it in profile. */
+.hm .stage { position: relative; margin-top: 150px; }
+.hm .track { position: absolute; left: 0; right: 0; bottom: 100%; margin-bottom: 12px; height: 6px; border-radius: 3px; background: var(--hm-line); overflow: hidden; }
+.hm .track i { position: absolute; inset: 0; background: #2563eb; transform-origin: left; transform: scaleX(var(--f, 1)); transition: transform var(--dur, 0ms) cubic-bezier(0.42, 0, 0.32, 1); }
+.hm .rider { position: absolute; left: 0; bottom: calc(100% + 18px); width: 124px; height: 142px; z-index: 2; translate: var(--x, 0px) 0; transition: translate var(--dur, 0ms) cubic-bezier(0.42, 0, 0.32, 1); }
+.hm .rider .dog { position: absolute; left: 12px; bottom: 0; width: 100px; height: 142px; transition: opacity 140ms; }
+.hm .rider .walker { position: absolute; left: -20px; bottom: -41px; width: 160px; height: 160px; opacity: 0; transition: opacity 180ms; }
+.hm .rider.on-foot .dog { opacity: 0; pointer-events: none; }
+.hm .rider.on-foot .walker { opacity: 1; }
+.hm .panel { background: var(--hm-panel); color: var(--hm-panel-ink); border-radius: 18px; overflow: hidden; box-shadow: 0 30px 60px -20px rgba(15, 23, 42, 0.35); position: relative; z-index: 1; }
+.hm .bar { display: flex; align-items: center; gap: 8px; padding: 14px 24px; border-bottom: 1px solid var(--hm-panel-line); font: 500 13px var(--font-mono); color: #9ca3af; }
+.hm .dots { display: flex; gap: 8px; margin-right: 6px; }
+.hm .dots i { width: 10px; height: 10px; border-radius: 50%; background: #ef4444; }
+.hm .dots i:nth-child(2) { background: #f59e0b; }
+.hm .dots i:nth-child(3) { background: #22c55e; }
+.hm .status { margin-left: auto; display: flex; align-items: center; gap: 8px; white-space: nowrap; color: #9ca3af; }
+.hm .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--hm-green); flex: none; }
+.hm .armed .pulse { background: var(--hm-panel-muted); }
+.hm .running .pulse { background: var(--hm-amber); animation: hm-blink 900ms infinite; }
+.hm .done .pulse { background: var(--hm-green); animation: none; }
+@keyframes hm-blink { 50% { opacity: 0.3; } }
+.hm .flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.hm .col { padding: 28px; min-width: 0; position: relative; }
+.hm .col + .col { border-left: 1px solid var(--hm-panel-line); }
+.hm .col-head { display: flex; align-items: center; gap: 10px; font: 500 13px var(--font-mono); color: #e5e7eb; margin-bottom: 20px; }
+.hm .num { width: 28px; height: 24px; border-radius: 14px; background: #2563eb; color: #fff; display: grid; place-items: center; font: 500 12px var(--font-mono); flex: none; transition: background 240ms var(--hm-ease), color 240ms; }
+.hm .armed .col:not(.on) .num { background: var(--hm-panel-line); color: var(--hm-panel-soft); }
+.hm .sub { color: #9ca3af; font-size: 11px; font-weight: 400; }
+.hm .col::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: #2563eb; transform: scaleX(0); transform-origin: left; transition: transform 500ms var(--hm-ease); }
+.hm .col.on::after { transform: scaleX(1); }
+.hm .intent { font: 700 26px/1.2 var(--font-display); margin: 0 0 18px; min-height: 2.4em; color: #fff; }
+.hm .caret { display: inline-block; width: 2px; height: 1em; background: var(--hm-sky); vertical-align: -0.12em; margin-left: 2px; opacity: 0; }
+.hm .typing .caret { opacity: 1; animation: hm-blink 700ms steps(1) infinite; }
+.hm .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: 15px; color: #d1d5db; }
+.hm .checks li { display: flex; gap: 10px; align-items: center; }
+.hm .checks svg { flex: none; color: var(--hm-green); }
+.hm pre { margin: 0; font: 14px/1.75 var(--font-mono); white-space: pre; overflow-x: auto; overflow-y: hidden; color: var(--hm-panel-ink); }
+.hm .k { color: var(--hm-key); }
+.hm .s { color: var(--hm-string); }
+.hm .p { color: var(--hm-panel-muted); }
+.hm .f { color: var(--hm-fn); }
+.hm .c { color: var(--hm-panel-muted); font-style: italic; }
+.hm .ln { display: block; }
+.hm .ln.hl { background: rgba(37, 99, 235, 0.22); box-shadow: inset 2px 0 0 #2563eb; }
+.hm .eps { display: grid; gap: 10px; }
+.hm .ep { display: flex; align-items: center; gap: 12px; background: var(--hm-panel-2); border: 1px solid var(--hm-panel-line); border-radius: 8px; padding: 9px 14px; font: 14px var(--font-mono); color: #e5e7eb; }
+.hm .verb { font-weight: 500; font-size: 13px; min-width: 44px; }
+.hm .verb.post { color: var(--hm-sky); }
+.hm .verb.get { color: var(--hm-green); }
+.hm .verb.patch { color: var(--hm-amber); }
+.hm .code { margin-left: auto; font-size: 11px; color: var(--hm-green); }
+
+/* Shared reveal. Visible by default (no JS, reduced motion); .armed on an ancestor hides pieces until .in arrives. */
+.hm .reveal { transition: opacity 360ms var(--hm-ease), transform 460ms var(--hm-ease); }
+.hm .armed .reveal { opacity: 0; transform: translateY(6px); }
+.hm .armed .reveal.in { opacity: 1; transform: none; }
+/* The second change. Hidden pieces keep their space so the panel never resizes. */
+.hm .v2 { transition: opacity 360ms var(--hm-ease), transform 460ms var(--hm-ease), background 300ms, border-color 300ms; }
+.hm .armed .v2:not(.in) { opacity: 0; transform: translateY(6px); }
+.hm .t-more { display: none; }
+.hm .grown .t-more { display: inline; }
+.hm .grown .t-end { display: none; }
+.hm .armed .code { opacity: 0; }
+.hm .armed .live .code { opacity: 1; transition: opacity 200ms 220ms; }
+
+/* Frontend stack: the query chain builds, then the request travels. */
+.hm .chain { display: block; }
+.hm .armed .chain:not(.in) { opacity: 0; transform: translateY(6px); }
+.hm .chain { transition: opacity 360ms var(--hm-ease), transform 460ms var(--hm-ease); }
+.hm .arrow { width: 48px; height: 2px; background: var(--hm-panel-line); position: relative; overflow: hidden; border-radius: 2px; }
+.hm .arrow::after { content: ""; position: absolute; inset: 0; background: var(--hm-sky); transform-origin: left; }
+.hm .armed .arrow::after { transform: scaleX(0); }
+.hm .armed.go .arrow.a1::after { animation: hm-run 520ms var(--hm-ease) forwards; }
+.hm .armed.go .arrow.a2::after { animation: hm-run 520ms var(--hm-ease) 600ms forwards; }
+@keyframes hm-run { to { transform: scaleX(1); } }
+.hm .ok { display: inline-block; margin-top: 4px; font: 500 11px var(--font-mono); color: var(--hm-green); background: rgba(74, 222, 128, 0.12); border-radius: 4px; padding: 2px 6px; }
+.hm .armed .ok { opacity: 0; transform: translateY(4px); transition: opacity 260ms var(--hm-ease), transform 260ms var(--hm-ease); }
+.hm .go .ok { opacity: 1; transform: none; transition-delay: 1150ms; }
+
+/* How it works: a different scene per step. Each plays when the rail reaches it and resets above it. */
+.hm .step-top { position: relative; display: flex; align-items: flex-end; gap: 16px; height: 150px; margin-bottom: 30px; }
+.hm .step-top .dog { width: 72px; height: 104px; flex: none; }
+.hm .rail { position: absolute; left: 0; right: 0; bottom: -12px; height: 2px; background: var(--hm-panel-line); border-radius: 2px; overflow: hidden; }
+.hm .rail i { position: absolute; inset: 0; background: #2563eb; transform-origin: left; transform: scaleX(var(--p, 1)); }
+.hm .scene { flex: 1; min-width: 0; height: 100%; position: relative; }
+.hm .sc-rules { display: flex; flex-wrap: wrap; align-content: flex-end; gap: 6px; padding-bottom: 6px; }
+.hm .rule { font: 500 11px var(--font-mono); padding: 4px 9px; border-radius: 999px; background: #13213d; color: #bfdbfe; border: 1px solid #1e3a8a; transition: opacity 260ms var(--hm-ease), transform 460ms var(--hm-ease); transition-delay: calc(var(--i) * 160ms); }
+.hm .scrolly .sc-rules:not(.on) .rule { opacity: 0; transform: translateY(-18px); transition-delay: 0ms; }
+.hm .cable { position: absolute; left: 0; right: calc(58% + 6px); bottom: 36px; height: 2px; background: repeating-linear-gradient(90deg, var(--hm-sky) 0 6px, transparent 6px 11px); transform-origin: left; transition: transform 460ms var(--hm-ease); animation: hm-flow 700ms linear infinite; }
+.hm .cable b { position: absolute; left: 50%; bottom: 7px; translate: -50% 0; font: 500 10px var(--font-mono); color: var(--hm-sky); letter-spacing: 0.06em; }
+.hm .scrolly .sc-mcp:not(.on) .cable { transform: scaleX(0); }
+@keyframes hm-flow { to { background-position: 11px 0; } }
+.hm .mini { position: absolute; right: 0; bottom: 6px; width: 58%; background: var(--hm-panel-2); border: 1px solid var(--hm-panel-line); border-radius: 10px; padding: 8px 10px; display: grid; gap: 4px; font: 11px var(--font-mono); color: var(--hm-panel-ink); }
+.hm .mini-h { display: flex; align-items: center; gap: 6px; color: var(--hm-panel-soft); }
+.hm .mini .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--hm-green); transition: background 300ms; }
+.hm .scrolly .sc-mcp:not(.on) .dot { background: var(--hm-panel-muted); }
+.hm .ent { transition: opacity 260ms; transition-delay: calc(500ms + var(--i) * 260ms); }
+.hm .scrolly .sc-mcp:not(.on) .ent { opacity: 0; transition-delay: 0ms; }
+.hm .sc-ask { display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding-bottom: 6px; }
+.hm .ask { align-self: flex-start; background: #fff; color: #0f172a; font: 500 12px var(--font-body); border-radius: 12px 12px 12px 4px; padding: 6px 11px; min-height: 30px; transition: opacity 260ms, transform 360ms var(--hm-ease); }
+.hm .scrolly .sc-ask:not(.on) .ask { opacity: 0; transform: translateY(6px); }
+.hm .ticks { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; font: 11px var(--font-mono); color: var(--hm-panel-soft); }
+.hm .ticks li { display: flex; gap: 5px; align-items: center; transition: opacity 240ms; }
+.hm .ticks svg { color: var(--hm-green); transition: opacity 240ms; }
+.hm .scrolly .sc-ask li:not(.t) { opacity: 0.3; }
+.hm .scrolly .sc-ask li:not(.t) svg { opacity: 0; }
+.hm .step .step-num { transition: background 300ms var(--hm-ease), color 300ms; }
+.hm .step h3, .hm .step p { transition: color 300ms; }
+.hm .scrolly .step:not(.awake) .step-num { background: var(--hm-panel-line); color: var(--hm-panel-soft); }
+.hm .scrolly .step:not(.awake) h3 { color: var(--hm-panel-soft); }
+.hm .scrolly .step:not(.awake) p { color: var(--hm-panel-muted); }
+
+@media (max-width: 860px) {
+  .hm .stage { margin-top: 120px; }
+  .hm .rider { width: 100px; height: 108px; }
+  .hm .rider .dog { left: 12px; width: 76px; height: 108px; }
+  .hm .rider .walker { left: -14px; width: 128px; height: 128px; bottom: -33px; }
+  .hm .facepack { --m: 0.8; }
+  .hm .flow { grid-template-columns: minmax(0, 1fr); }
+  .hm .col + .col { border-left: 0; border-top: 1px solid var(--hm-panel-line); }
+  .hm .intent { min-height: 0; }
+  .hm .step-top { height: 140px; }
+  .hm .arrow { width: 20px; }
+}
+
+@media (max-width: 480px) {
+  .hm .col { padding: 22px 20px; }
+  .hm .panel pre { font-size: 12.5px; }
+  .hm .bar { padding: 12px 18px; font-size: 12px; }
+}
+
+/* Reduced motion: final states, no movement. */
+.hm.rm .dog, .hm.rm .dog *, .hm.rm .walker * { animation: none !important; }
+.hm.rm .dog { --lx: 0 !important; --ly: 0 !important; --tilt: 0deg !important; }
+.hm.rm .dog .ear { rotate: none !important; }
+.hm.rm .rider, .hm.rm .track i, .hm.rm .yardface, .hm.rm .facepack { transition: none; }
+.hm.rm .reveal, .hm.rm .chain { transform: none !important; }
+.hm.rm .rule, .hm.rm .cable, .hm.rm .ask { transition: none; animation: none; }
