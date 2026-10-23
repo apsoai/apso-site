@@ -3,6 +3,7 @@ title: "Apso vs Convex"
 description: "Convex is a reactive backend where you write TypeScript functions against a hosted database. Apso generates a standard backend service from a schema. This guide covers where each fits, and what adding a feature looks like on both."
 competitor: "Convex"
 date: "2026-10-23"
+order: 7
 ---
 
 Convex is one of the best-built backends for AI-written apps. You write queries, mutations and actions as TypeScript functions in a `convex/` folder, they run as transactions against Convex's reactive document database, and every client sees updates live. Its transactional model removes a whole class of concurrency bugs that agents tend to write against a plain database.
@@ -11,11 +12,10 @@ Apso solves a different problem. Your agent describes the data model in a schema
 
 Both put backend code in your repository. The difference is what writes it, and what it needs in order to run.
 
-## The short answer
-
-**Choose Convex** when live, reactive data is central to the product, your stack is TypeScript end to end, and you are happy to run on the Convex runtime, in Convex Cloud or self-hosted.
-
-**Choose Apso** when you want a conventional REST service on Postgres, in the language your team already uses, with access rules generated from the schema instead of written into each function.
+<ShortAnswer>
+  <Choice title="Choose Convex when">Live, reactive data is central to the product, your stack is TypeScript end to end, and you are happy to run on the Convex runtime, in Convex Cloud or self-hosted.</Choice>
+  <Choice title="Choose Apso when" highlight>You want a conventional REST service on Postgres, in the language your team already uses, with access rules generated from the schema instead of written into each function.</Choice>
+</ShortAnswer>
 
 ## Read the guardrails. They're in your repo.
 
@@ -71,11 +71,15 @@ Each function carries its own authorization check, so the review has to confirm 
 - **TypeScript everywhere.** Schema, functions and client share types end to end.
 - **A fast realtime prototype.** For a collaborative or live app, Convex gets you there quickly.
 
+<KeepBand>
+
 ## What you keep if you leave
 
 **Leaving Convex**, you can export your data as a ZIP of JSONL documents per table. Your functions are TypeScript in your repository, but they are written against Convex's APIs and runtime, so moving to another backend means rewriting them. You can also stay on Convex and self-host it.
 
 **Leaving Apso**, the backend is already standard NestJS, FastAPI or Gin code in your repository with no Apso runtime, and it runs with Docker or the framework's tooling. You give up Apso's infrastructure automation: provisioning and hosting with managed Postgres, environment management, dashboard logs and data views, and `apso deploy`. Exporting gives you the application code. The infrastructure automation is the part you pay for.
+
+</KeepBand>
 
 ## Bottom line
 

@@ -12,6 +12,8 @@ export interface CompareFrontmatter {
   description: string;
   competitor: string;
   date: string;
+  /** Position on the /compare index. */
+  order?: number;
   image?: string;
 }
 

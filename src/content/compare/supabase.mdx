@@ -3,17 +3,17 @@ title: "Apso vs Supabase"
 description: "Supabase gets an AI-built app to its first version fast. This guide covers what happens on the second feature, where the access rules live on each platform, and when each one is the right choice."
 competitor: "Supabase"
 date: "2026-10-23"
+order: 2
 ---
 
 The first version of an AI-built app is the easy part. You describe it, the agent builds it, and Supabase gives it a database, auth and an API in an afternoon. The hard part comes with the second feature, and the tenth. Each change is generated fresh, and nothing makes the new table follow the rules the last one did.
 
 That is the real decision between Supabase and Apso. Supabase is a hosted Postgres platform where you configure the backend. Apso is a generator: your agent describes the change in a schema file, and Apso writes the backend code the same way every time, into your repository.
 
-## The short answer
-
-**Choose Supabase** when the database is your backend, you want realtime subscriptions out of the box, and you are comfortable writing and reviewing a Postgres policy for every table you add.
-
-**Choose Apso** when your app already has users and keeps changing, when an agent is making most of those changes, or when you need the backend to be code your team owns and reviews like the rest of the product.
+<ShortAnswer>
+  <Choice title="Choose Supabase when">The database is your backend, you want realtime subscriptions out of the box, and you are comfortable writing and reviewing a Postgres policy for every table you add.</Choice>
+  <Choice title="Choose Apso when" highlight>Your app already has users and keeps changing, when an agent is making most of those changes, or when you need the backend to be code your team owns and reviews like the rest of the product.</Choice>
+</ShortAnswer>
 
 ## Where the second feature goes wrong on Supabase
 
@@ -89,11 +89,15 @@ Apso's MCP server takes the other approach. Its tools design and validate the sc
 - **You want enforcement inside the database.** RLS applies to every query, including SQL you write by hand. Apso's guard covers the generated API.
 - **You want auth, storage and functions in one bill.** Supabase bundles them. With Apso you choose an auth provider and run the service.
 
+<KeepBand>
+
 ## What you keep if you leave
 
 **Leaving Supabase**, `supabase db dump` exports your roles, schema and data. Storage files move separately. You rebuild auth, every RLS policy, your Edge Functions and the client calls that depend on the Supabase SDK. You can self-host Supabase with Docker, without branching, managed backups or point-in-time recovery.
 
 **Leaving Apso**, the backend is already standard NestJS, FastAPI or Gin code in your repository, with no Apso runtime. It runs with Docker or the framework's own tooling. What you give up is Apso's infrastructure automation: provisioning and hosting with managed Postgres, environment management, the logs and data views in the dashboard, and `apso deploy`. Exporting gives you the application code. The infrastructure automation is the part you pay for.
+
+</KeepBand>
 
 ## Bottom line
 
