@@ -34,3 +34,18 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Secrets
+
+Secrets live in 1Password (Mavric account, vault `apso-site`), one item per secret, the same way as `agent-runtime`. `deploy/secrets.env` holds only `op://` references and the non-secret values; it is safe to commit.
+
+| Variable | 1Password reference |
+| --- | --- |
+| `GHL_API_TOKEN` | `op://apso-site/ghl-private-integration/token` (GoHighLevel Private Integration token, Apso sub-account, contacts write) |
+| `RESEND_API_KEY` | `op://apso-site/resend/credential` (contact form fallback email) |
+
+- Local dev with real values: `scripts/with-secrets.sh npm run dev`
+- Push to Amplify (merges with the branch's existing variables, prints key names only):
+  `AMPLIFY_APP_ID=<apso-site app id> scripts/with-secrets.sh scripts/sync-amplify-env.sh main --dry-run`, then again without `--dry-run`, then redeploy the branch.
+
+`scripts/with-secrets.sh` uses a read-only 1Password service account token from the macOS Keychain (service `apso-site-op-sa`) when present, so nothing prompts; otherwise the 1Password app asks once.
