@@ -18,6 +18,8 @@ export interface CompareFrontmatter {
 export interface UseCaseFrontmatter {
   title: string;
   description: string;
+  /** Short name for the breadcrumb, such as "Multi-tenant SaaS". */
+  breadcrumb?: string;
   date: string;
   image?: string;
 }

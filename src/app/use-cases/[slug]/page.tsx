@@ -3,8 +3,7 @@ import type { Metadata } from "next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { getContentBySlug, getContentSlugs } from "@/lib/content";
-import { mdxComponents } from "@/components/content/mdx-components";
-import { MdxLayout } from "@/components/content/mdx-layout";
+import { UseCaseLayout, tocFromMdx, useCaseMdxComponents } from "@/components/use-cases/use-case-layout";
 import type { UseCaseFrontmatter } from "@/types/content";
 
 interface PageProps {
@@ -31,19 +30,17 @@ export default async function UseCasePage({ params }: PageProps) {
   if (!item) notFound();
 
   return (
-    <MdxLayout
+    <UseCaseLayout
       title={item.frontmatter.title}
       description={item.frontmatter.description}
-      breadcrumbs={[
-        { label: "Use Cases", href: "/use-cases" },
-        { label: item.frontmatter.title },
-      ]}
+      breadcrumb={item.frontmatter.breadcrumb ?? item.frontmatter.title}
+      toc={tocFromMdx(item.content)}
     >
       <MDXRemote
         source={item.content}
-        components={mdxComponents}
+        components={useCaseMdxComponents}
         options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
       />
-    </MdxLayout>
+    </UseCaseLayout>
   );
 }
