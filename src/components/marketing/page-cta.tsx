@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { APP_URL, DOCS_URL } from "@/lib/constants";
 
@@ -13,7 +13,6 @@ interface PageCtaProps {
 }
 
 export function PageCta({
-  eyebrow = "Build on a foundation you own",
   title = "Give your agent Apso's backend expertise",
   description = "Connect Apso to Claude or Codex, give the agent Apso's rules and workflows, and review a consistent backend your team can extend and deploy anywhere.",
   primaryLabel = "Start building",
@@ -42,7 +41,6 @@ export function PageCta({
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[8px] bg-brand px-6 text-[15px] font-medium text-white transition-colors hover:bg-brand-hover"
             >
               {primaryLabel}
-              {primaryExternal ? <ArrowUpRight className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
             </a>
             <a
               href={secondaryHref}
@@ -51,7 +49,7 @@ export function PageCta({
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[8px] bg-white px-6 text-[15px] font-medium text-fg-1 transition-colors hover:bg-bg-2"
             >
               {secondaryLabel}
-              {secondaryExternal ? <ArrowUpRight className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+              <ArrowRight className="h-4 w-4" />
             </a>
           </div>
         </div>

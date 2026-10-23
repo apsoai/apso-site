@@ -4,7 +4,7 @@ import { ExternalLink } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHero } from "@/components/marketing/page-hero";
 import { ClosingBand } from "@/components/content/closing-band";
-import { APP_URL, DOCS_URL, GITHUB_URL } from "@/lib/constants";
+import { APP_URL, BOOKING_URL, DOCS_URL, GITHUB_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Company",
@@ -94,7 +94,7 @@ export default function CompanyPage() {
                 <span className="font-medium text-fg-1">Apache-2.0 for the CLI, SDK, and templates</span>
               </Fact>
               <Fact label="Contact">
-                <a href="/contact" className={linkClass}>Book a call</a>
+                <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className={linkClass}>Book a call</a>
                 <span aria-hidden="true" className="mx-2 text-fg-4">·</span>
                 <a href="/contact" className={linkClass}>Send a message</a>
               </Fact>
