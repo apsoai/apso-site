@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { CONTACT_TOPICS } from "./topics";
+import { CONTACT_TO_EMAIL, deliverContact } from "@/lib/contact-delivery";
 
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -14,11 +15,14 @@ const contactSchema = z.object({
 
 export type ContactState = {
   success: boolean;
-  error?: string;
+  /** Set when GoHighLevel and the email fallback both failed: the address to email instead. */
+  unreachableEmail?: string;
   /** Echoed back on success so the confirmation can address the sender. */
   name?: string;
   email?: string;
   fieldErrors?: Record<string, string>;
+  /** Echoed back on failure so the form keeps what the visitor typed. */
+  values?: Record<string, string>;
 };
 
 export async function submitContact(
@@ -42,40 +46,10 @@ export async function submitContact(
         fieldErrors[issue.path[0] as string] = issue.message;
       }
     }
-    return { success: false, fieldErrors };
+    return { success: false, fieldErrors, values: raw };
   }
 
-  try {
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-      console.error("RESEND_API_KEY not set");
-      return { success: false, error: "Server configuration error. Please try again later." };
-    }
-
-    const { Resend } = await import("resend");
-    const resend = new Resend(apiKey);
-
-    await resend.emails.send({
-      from: "Apso Contact Form <noreply@apso.ai>",
-      to: "sales@mavric.tech",
-      replyTo: result.data.email,
-      subject: `Contact form: ${result.data.name}${result.data.company ? ` (${result.data.company})` : ""}`,
-      text: [
-        `Name: ${result.data.name}`,
-        `Email: ${result.data.email}`,
-        `Topic: ${result.data.topic}`,
-        result.data.company ? `Company: ${result.data.company}` : null,
-        result.data.jobTitle ? `Job Title: ${result.data.jobTitle}` : null,
-        "",
-        result.data.message,
-      ]
-        .filter(Boolean)
-        .join("\n"),
-    });
-
-    return { success: true, name: result.data.name, email: result.data.email };
-  } catch (err) {
-    console.error("Contact form error:", err);
-    return { success: false, error: "Failed to send message. Please try again." };
-  }
+  const delivered = await deliverContact(result.data);
+  if (delivered === "failed") return { success: false, unreachableEmail: CONTACT_TO_EMAIL, values: raw };
+  return { success: true, name: result.data.name, email: result.data.email };
 }

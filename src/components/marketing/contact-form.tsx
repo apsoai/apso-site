@@ -64,6 +64,7 @@ export function ContactForm() {
   const fieldProps = (id: string) => ({
     id,
     name: id,
+    defaultValue: state.values?.[id] ?? undefined,
     "aria-invalid": err[id] ? true : undefined,
     "aria-describedby": err[id] ? `${id}-error` : undefined,
     className: `${control} ${id === "message" ? "min-h-[120px] resize-y py-3" : id === "topic" ? "h-[46px] appearance-none pr-10" : "h-[46px]"} ${
@@ -99,9 +100,17 @@ export function ContactForm() {
             ) : (
               <form action={formAction} className="flex flex-col gap-5 rounded-[12px] border border-line-1 p-6 sm:p-8">
                 <h2 className="font-display text-[28px] font-extrabold text-fg-1">Tell us enough to start usefully</h2>
-                {state.error && (
+                {state.unreachableEmail && (
                   <div className="rounded-[8px] border border-red-200 bg-red-50 p-3 text-[14px] text-red-700" role="alert">
-                    {state.error}
+                    Couldn&apos;t send. Email{" "}
+                    <a href={`mailto:${state.unreachableEmail}`} className="font-medium underline">
+                      {state.unreachableEmail}
+                    </a>{" "}
+                    or{" "}
+                    <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className="font-medium underline">
+                      book a call
+                    </a>{" "}
+                    instead.
                   </div>
                 )}
                 <div className="flex flex-col gap-5 sm:flex-row sm:gap-4">
@@ -114,7 +123,7 @@ export function ContactForm() {
                 </div>
                 <Field id="topic" label="Topic" required error={err.topic}>
                   <div className="relative">
-                    <select {...fieldProps("topic")} required defaultValue={CONTACT_TOPICS[0]}>
+                    <select key={state.values?.topic} {...fieldProps("topic")} required defaultValue={state.values?.topic ?? CONTACT_TOPICS[0]}>
                       {CONTACT_TOPICS.map((t) => (
                         <option key={t}>{t}</option>
                       ))}
