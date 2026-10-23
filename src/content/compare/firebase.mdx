@@ -1,67 +1,93 @@
 ---
 title: "Apso vs Firebase"
-description: "A practical comparison of Apso and Firebase for teams choosing between a managed app platform and generated backend code."
+description: "Firebase is built for mobile apps with realtime and offline sync. This guide covers what changes when an AI-built app on Firebase needs its second feature, its second tenant, and a backend your team owns."
 competitor: "Firebase"
-date: "2026-06-01"
+date: "2026-10-23"
 ---
 
-Firebase is a Google platform for mobile and web apps. It brings together Firestore, Authentication, Cloud Functions, Hosting, Cloud Messaging, analytics, and mobile SDKs.
+Firebase gets a mobile or web app running without designing a backend at all. Firestore stores the data, Firebase Auth signs people in, and Security Rules decide who can read what. For a first version, especially on mobile, that is hard to beat.
 
-Apso takes a different path. It uses an open-source generator to create a complete TypeScript, Golang, or Python backend from a schema, then deploys that backend to AWS. The output is code your team owns.
+The question this page answers is what happens after the first version: when the app has paying customers, the data turns relational, an agent is writing most of the changes, and each change has to follow the same rules as the last one.
 
-## Quick Verdict
+## The short answer
 
-Choose Firebase when you need mobile SDKs, realtime sync, offline-first behavior, and tight Google Cloud integration.
+**Choose Firebase** when you are building a mobile-first app, offline sync and realtime updates matter, and your team is comfortable writing and testing Security Rules for every path in the database.
 
-Choose Apso when you need a SQL-backed service, backend code ownership, language choice, and a clean exit path.
+**Choose Apso** when you are building B2B or multi-tenant software on relational data, an agent is making most of the changes, and you want the backend to be TypeScript, Python or Go code in your own repository.
 
-## Side-by-Side
+## Where the second feature goes wrong on Firebase
 
-| Decision area | Apso | Firebase |
+Firebase access control is a set of Security Rules matched against document paths. Firebase's docs are clear that "security rules apply only at the matched path." A new collection, or a new subcollection under an existing one, needs its own rule.
+
+The safe starting point is locked mode, which denies every request. The fast starting point is test mode, which lets anyone read and write. Agents and tutorials tend to start fast. Then every feature adds a path, and each path needs a rule written by whoever added it, in a separate rules language, tested in a separate emulator.
+
+There is a second cost. Firestore is a document database. Workspaces with members, projects, tasks and invitations are relational data, and modelling them as documents means duplicating fields and keeping the copies in sync by hand. Firebase now offers SQL Connect (formerly Data Connect), a Postgres service with a GraphQL interface. It helps, but it is a second data model with its own access configuration.
+
+If your app started in Firebase Studio, note that Google has announced Firebase Studio is sunsetting on March 22, 2027, and new workspaces have been disabled since June 22, 2026.
+
+## One change, both ways: add team invitations
+
+Your app has workspaces and projects, and the next feature is inviting teammates.
+
+**On Firebase**, the agent adds an `invitations` collection, usually under each workspace document. Then someone has to:
+
+1. Write a Security Rule for the new path that checks the caller is a member of that workspace.
+2. Decide where membership lives, and copy it somewhere the rule can read it.
+3. Test the rule in the emulator, including a member of another workspace trying to read it.
+4. Write a Cloud Function to send the email and accept the invitation safely.
+
+**On Apso**, the agent adds one entity to `.apsorc`, the schema file in your repository:
+
+```json
+{
+  "name": "Invitation",
+  "scopeBy": "workspaceId",
+  "created_at": true,
+  "fields": [
+    { "name": "email", "type": "text", "is_email": true },
+    { "name": "role", "type": "enum", "values": ["Admin", "Member"] }
+  ]
+}
+```
+
+`apso generate` writes REST endpoints for it on Postgres, with a generated guard that filters lists to the caller's workspace, sets `workspaceId` on create, and checks ownership on every read, update and delete by id. The same guard covers every scoped entity, so the tenth one behaves like the first. Sending the email goes in `src/extensions/`, which generation never overwrites.
+
+**The limits, stated plainly.** The guard runs on the generated API endpoints. Code you write in `extensions/` that queries the database directly is not filtered by it. Generated scoping ships in the TypeScript generator today, not yet in Python or Go.
+
+## Your agent's tools
+
+Firebase's official MCP server can add, update and delete Firestore documents, read and validate rules, and run `firebase deploy`. That is useful during development. It also means an agent connected to a live project can change live data, and no read-only mode is documented.
+
+Apso's MCP server designs and validates the schema, generates code and diagnoses problems. None of its tools write to a database. Changes reach production through your pull request and deploy.
+
+## Side by side
+
+| | Apso | Firebase |
 | --- | --- | --- |
-| Primary model | Generated backend code | Managed app platform |
-| Database model | PostgreSQL | Firestore document database |
-| API ownership | Generated service code in your repo | App calls Firebase services and Cloud Functions |
-| Open-source posture | Open-source generator, Apache-2.0 templates, and open-source generated stacks | Proprietary Google platform services |
-| Business logic | Application-layer backend code | Cloud Functions, security rules, and client logic |
-| Auth | Bring your own auth provider | Firebase Authentication |
-| Realtime and offline | Build as needed | Core platform strength |
-| Mobile support | Standard API consumption | Mature mobile SDKs |
-| Best fit | Owned production backends | Mobile-first and realtime apps |
+| What it is | A generator that writes your backend service | A Google-hosted app platform |
+| Data model | PostgreSQL, relational | Firestore documents, plus SQL Connect for Postgres |
+| Where access rules live | `scopeBy` in the schema, generated into guard code (TypeScript today) | Security Rules per document path |
+| What the agent changes | The schema file, reviewed in a pull request | Live documents and rules, through the MCP server |
+| Business logic | TypeScript, Python or Go in `extensions/` | Cloud Functions in JavaScript, TypeScript or Python |
+| Auth | BetterAuth, Auth0, Clerk, Cognito, API keys or custom sessions | Firebase Authentication |
+| Offline and realtime | Not generated | Core strength, with offline persistence on mobile and web |
+| Where it runs | Apso Cloud, or anywhere you run Docker | Google Cloud |
 
-## Where Firebase Fits
+## Where Firebase is the better choice
 
-- **Mobile-first development.** Firebase fits teams that already want to build around iOS, Android, Flutter, and web SDKs.
-- **Realtime and offline-first apps.** Firestore is built around realtime updates and offline behavior.
-- **Bundled app services.** Auth, hosting, messaging, analytics, crash reporting, and remote config sit in one platform.
-- **Prototype speed.** Teams can ship a working app without designing a backend service.
-- **Google Cloud fit.** Firebase is a fit for teams already committed to Google infrastructure.
+- **Mobile-first apps.** Firebase's SDKs for Android, Apple platforms, Flutter and the web are mature.
+- **Offline sync.** Firestore keeps working without a connection and syncs later. Apso does not generate that.
+- **Realtime updates.** Listeners on documents and queries are built in.
+- **Everything in one console.** Auth, hosting, messaging, analytics and crash reporting sit together on Google Cloud.
 
-## Where Apso Wins
+## What you keep if you leave
 
-- **Backend code ownership.** Apso generates TypeScript, Golang, or Python backend code that your team can read, test, and modify.
-- **Open-source generation path.** The generator, templates, and generated TypeScript, Golang, and Python stacks are open source, so ownership is practical, not just contractual.
-- **Relational data.** Apso uses PostgreSQL, which fits joins, transactions, constraints, and relational SaaS data better than document modeling.
-- **Auth portability.** Apso supports Bring Your Own Auth, so you can use BetterAuth, Auth0, Clerk, Cognito, API keys, or custom sessions.
-- **Application-layer guardrails.** Multi-tenancy, validation, and API structure are generated into the backend rather than spread across security rules and platform configuration.
-- **Exit path.** The generated backend does not need an Apso runtime.
+**Leaving Firebase**, managed Firestore export writes your data to Cloud Storage and requires the Blaze plan. You then rebuild your Security Rules, reshape document data for whatever comes next, and replace the Firebase SDK calls in your app. Firebase is a hosted Google service, so there is no self-hosted Firebase to move to.
 
-## Migration and Lock-In
+**Leaving Apso**, the backend is standard NestJS, FastAPI or Gin code in your repository with no Apso runtime, and it runs with Docker or the framework's tooling. You give up Apso's infrastructure automation: provisioning and hosting with managed Postgres, environment management, dashboard logs and data views, and `apso deploy`. Exporting gives you the application code. The infrastructure automation is the part you pay for.
 
-Firebase can be a great start, but the app usually accumulates Firebase-specific security rules, Firestore data shapes, Cloud Functions, auth assumptions, and SDK calls.
+## Bottom line
 
-Apso starts with a backend codebase. That means you give up some platform convenience, but you gain a service your team can keep if the toolchain changes.
+Firebase is the right call for mobile apps that live on realtime and offline sync. Apso is for relational, multi-tenant products that keep changing, where an agent describes each change in one schema file and the generated backend keeps the same access pattern on every entity.
 
-## Best Fit by Team
-
-| Team | Better fit | Why |
-| --- | --- | --- |
-| Mobile app team | Firebase | Mobile SDKs and offline support are mature |
-| B2B SaaS team | Apso | Relational data, tenant scoping, and owned code matter |
-| Prototype or hackathon | Firebase | The managed platform gets you moving fast |
-| Regulated or audited backend | Apso | Reviewable generated code is easier to inspect |
-| Team that wants Google Cloud services | Firebase | The platform is built around that ecosystem |
-
-## Bottom Line
-
-Firebase fits mobile-first apps and realtime experiences. Apso is the better fit when you are building a backend service you expect to own, audit, and customize over time.
+If your app is at that stage, [book a 20-minute demo](/contact) and bring the feature you are building next.

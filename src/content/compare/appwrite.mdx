@@ -1,65 +1,87 @@
 ---
 title: "Apso vs Appwrite"
-description: "A practical comparison of Apso and Appwrite for teams choosing between an open-source backend platform and generated backend code."
+description: "Appwrite is an open-source backend platform you can run anywhere. Apso generates the backend as code in your repository. This guide covers where each fits, and what adding a feature looks like on both."
 competitor: "Appwrite"
-date: "2026-06-02"
+date: "2026-10-23"
 ---
 
-Appwrite is an open-source backend platform with auth, databases, storage, functions, realtime, messaging, and hosting. It gives teams a Firebase-like platform that can run in Appwrite Cloud or self-hosted infrastructure.
+Appwrite and Apso both answer the lock-in worry, in different ways. Appwrite is an open-source backend platform, licensed BSD-3-Clause, that you can use on Appwrite Cloud or run yourself. Auth, databases, storage, functions, realtime and messaging come in one product. Apso is a generator: your agent describes the data model in a schema file, and Apso writes the backend service as TypeScript, Python or Go code in your repository.
 
-Apso uses an open-source generator to create a TypeScript, Golang, or Python backend from a schema. The output is a normal backend codebase with generated routes, validation, auth guards, migrations, and deployment config.
+With Appwrite you own the platform. With Apso you own the code. That difference decides most of what follows.
 
-## Quick Verdict
+## The short answer
 
-Choose Appwrite when you want an open-source all-in-one platform with built-in backend services.
+**Choose Appwrite** when you want a full backend platform with realtime, storage and messaging built in, and you value being able to self-host the same product you use in the cloud.
 
-Choose Apso when you want the backend service itself to live as code in your repository.
+**Choose Apso** when you want the backend itself to be ordinary code your team reviews and extends, an agent is making most of the changes, and each change should follow the same pattern as the last.
 
-## Side-by-Side
+## What each change costs
 
-| Decision area | Apso | Appwrite |
+Appwrite's permissions are set on each table and row, and the defaults are careful. A table created from the Console or a server SDK without explicit permissions means "no one can access it by default because the permissions will be empty." Rows created through a client SDK give their creator access.
+
+That is a safe default. It also means every new table needs its permissions designed and set before the feature works for the right people, and in a multi-tenant app those permissions have to express which workspace a row belongs to. The rule lives in the platform's configuration, next to the data rather than in your codebase.
+
+## One change, both ways: add team invitations
+
+**On Appwrite**, someone has to:
+
+1. Create an `invitations` table in TablesDB with its columns.
+2. Set table and row permissions so only members of the right workspace can read and change each invitation.
+3. Write an Appwrite Function to send the email and accept the invitation.
+4. Call the new table from the app through the Appwrite SDK.
+
+**On Apso**, the agent adds one entity to `.apsorc`, the schema file in your repository:
+
+```json
+{
+  "name": "Invitation",
+  "scopeBy": "workspaceId",
+  "created_at": true,
+  "fields": [
+    { "name": "email", "type": "text", "is_email": true },
+    { "name": "role", "type": "enum", "values": ["Admin", "Member"] }
+  ]
+}
+```
+
+`apso generate` writes the entity, its REST endpoints and a guard that filters lists to the caller's workspace, sets `workspaceId` on create, and checks ownership on reads, updates and deletes by id. Any HTTP client can call it, with no platform SDK required. The email logic goes in `src/extensions/`, which generation never overwrites.
+
+**The limits.** The guard runs on the generated API endpoints, not inside the database, so code in `extensions/` that queries the database directly is not filtered by it. Generated scoping ships in the TypeScript generator today, not yet in Python or Go.
+
+## Your agent's tools
+
+Appwrite's official MCP server can create, update and delete resources in your project, with calls going through Appwrite's permission checks. An agent connected to a live project changes live data.
+
+Apso's MCP server designs and validates the schema, generates code and diagnoses problems. None of its tools write to a database. Changes reach production through your pull request and deploy.
+
+## Side by side
+
+| | Apso | Appwrite |
 | --- | --- | --- |
-| Primary model | Backend code generator | Backend platform |
-| Services included | Generated API, auth integration, database migrations, deployment config | Auth, databases, storage, functions, realtime, messaging, and hosting |
-| Code ownership | You own generated service code | You own functions and app code, while the platform provides core backend services |
-| Open-source posture | Open-source generator, Apache-2.0 templates, and open-source generated stacks | Open-source platform with a platform runtime dependency |
-| Deployment | Managed AWS or your cloud | Appwrite Cloud or self-hosted Appwrite |
-| Data model | PostgreSQL-backed generated service | Appwrite database APIs |
-| Business logic | Application-layer code in your backend | Functions plus platform configuration |
-| Best fit | Teams standardizing owned services | Teams that want an open-source backend platform |
+| What it is | A generator that writes your backend service | An open-source backend platform |
+| What you own | The service code, in your repository | The platform, if you self-host it |
+| Where access rules live | `scopeBy` in the schema, generated into guard code (TypeScript today) | Table and row permissions in the platform |
+| What the agent changes | The schema file, reviewed in a pull request | Live resources, through the MCP server |
+| Business logic | TypeScript, Python or Go in `extensions/` | Appwrite Functions, with 17 runtimes |
+| Built-in services | API, auth integration, migrations, deployment | Auth, databases, storage, functions, realtime, messaging, hosting |
+| Where it runs | Apso Cloud, or anywhere you run Docker | Appwrite Cloud, Docker or Kubernetes |
+| License | Generator, templates and generated code are Apache-2.0 | BSD-3-Clause |
 
-## Where Appwrite Fits
+## Where Appwrite is the better choice
 
-- **All-in-one platform.** Auth, databases, storage, functions, realtime, messaging, and hosting are available from one product surface.
-- **Open-source platform story.** Teams can self-host Appwrite when they want more control than a proprietary managed service.
-- **Realtime and messaging.** Appwrite fits apps where subscriptions, events, and messaging are core backend needs.
-- **Platform-first ergonomics.** The dashboard and SDKs help teams move quickly when they want to build inside Appwrite.
+- **You want the whole platform.** Storage, realtime, messaging and functions come built in. Apso does not generate storage or realtime.
+- **Self-hosting the platform matters.** Appwrite runs on Docker or Kubernetes, and its migration tool moves data between Cloud and self-hosted in both directions.
+- **Your team works in many languages.** Functions support 17 runtimes.
+- **You are moving off Firebase or Supabase.** Appwrite's migration tool imports from both.
 
-## Where Apso Wins
+## What you keep if you leave
 
-- **Generated service ownership.** Apso gives you backend code, not only a platform configuration.
-- **Open-source generation path.** The generator, templates, and generated TypeScript, Golang, and Python stacks are open source, so ownership is practical, not just contractual.
-- **Language-specific backend output.** Teams can generate TypeScript, Golang, or Python backends and keep using normal backend tooling.
-- **Database and API shape.** Apso creates a service layer with routes, validation, migrations, and tenant scoping that your team can inspect directly.
-- **Client independence.** The generated API can be consumed by any HTTP client, without tying production app code to a platform SDK.
-- **Regeneration path.** Agents can update the schema and let Apso regenerate consistent backend code.
+**Leaving Appwrite** is easier than leaving most platforms, because you can self-host it. Leaving the platform entirely means rebuilding your permissions, functions and the SDK calls in your app on whatever comes next.
 
-## Migration and Lock-In
+**Leaving Apso**, the backend is already standard NestJS, FastAPI or Gin code in your repository with no Apso runtime, and it runs with Docker or the framework's tooling. You give up Apso's infrastructure automation: provisioning and hosting with managed Postgres, environment management, dashboard logs and data views, and `apso deploy`. Exporting gives you the application code. The infrastructure automation is the part you pay for.
 
-Appwrite reduces proprietary cloud lock-in because it can be self-hosted, but your app still depends on the Appwrite platform model, SDKs, services, and runtime behavior.
+## Bottom line
 
-Apso reduces platform dependency by generating the backend service as code. You can keep the generated code and change how you deploy or extend it.
+Appwrite is a strong choice when you want an open-source platform with everything built in. Apso is for teams that want the backend to be their own code, where each change starts as one schema edit and every new entity gets the same API and access pattern as the ones before it.
 
-## Best Fit by Team
-
-| Team | Better fit | Why |
-| --- | --- | --- |
-| Team that wants one backend platform | Appwrite | Core backend services are bundled |
-| Team that wants owned service code | Apso | The generated backend lives in your repo |
-| Mobile or realtime-heavy app | Appwrite | Realtime and app services are central |
-| Agency delivering code to clients | Apso | The client can receive and maintain the generated backend |
-| Team standardizing agent-built backends | Apso | The schema and generator create a repeatable boundary |
-
-## Bottom Line
-
-Appwrite fits teams that want an open-source backend platform. Apso is the better fit when the main requirement is owning the generated backend code and keeping the service portable.
+If that is your team, [book a 20-minute demo](/contact) and bring the feature you are building next.

@@ -15,7 +15,9 @@ export const metadata: Metadata = {
 };
 
 const competitorDetails: Record<string, { initial: string; category: string; color: string }> = {
+  "Agent-written code": { initial: "AI", category: "Your coding agent, on its own", color: "bg-fg-2" },
   Appwrite: { initial: "A", category: "Open-source backend platform", color: "bg-[#f02e65]" },
+  Convex: { initial: "C", category: "Reactive backend platform", color: "bg-[#ee342f]" },
   Firebase: { initial: "F", category: "Managed application platform", color: "bg-[#f59e0b]" },
   Hasura: { initial: "H", category: "GraphQL API platform", color: "bg-[#1eb4d4]" },
   Supabase: { initial: "S", category: "Managed Postgres platform", color: "bg-[#3ecf8e]" },
