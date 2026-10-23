@@ -168,7 +168,7 @@ export const FOOTER_LINKS = {
   Resources: [
     { label: "Blog", href: "/blog" },
     { label: "FAQ", href: "/faq" },
-    { label: "Customers", href: "/customers" },
+    { label: "Who it's for", href: "/who-its-for" },
     { label: "About", href: "/company" },
     { label: "Contact", href: "/contact" },
     { label: "Privacy Policy", href: "/privacy-policy" },
