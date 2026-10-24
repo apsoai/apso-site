@@ -54,4 +54,4 @@ Secrets live in 1Password (Mavric account, vault `apso-site`), one item per secr
 ## Cloudflare (in progress, #28)
 
 - Local on the Workers runtime: `npm run cf:build`, then `scripts/with-secrets.sh npm run cf:preview` (port 3050).
-- Infrastructure (zone, DNS, Worker, secrets, Access) is the Pulumi program in `infra/`. See `infra/README.md`.
+- Infrastructure (zone, DNS, Worker, secrets) is the Pulumi program in `infra/`. See `infra/README.md`.
