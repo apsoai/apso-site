@@ -50,3 +50,8 @@ Secrets live in 1Password (Mavric account, vault `apso-site`), one item per secr
   `AMPLIFY_APP_ID=<apso-site app id> scripts/with-secrets.sh scripts/sync-amplify-env.sh main --dry-run`, then again without `--dry-run`, then redeploy the branch.
 
 `scripts/with-secrets.sh` uses a read-only 1Password service account token from the macOS Keychain (service `apso-site-op-sa`) when present, so nothing prompts; otherwise the 1Password app asks once.
+
+## Cloudflare (in progress, #28)
+
+- Local on the Workers runtime: `npm run cf:build`, then `scripts/with-secrets.sh npm run cf:preview` (port 3050).
+- Infrastructure (zone, DNS, Worker, secrets, Access) is the Pulumi program in `infra/`. See `infra/README.md`.

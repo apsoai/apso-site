@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Cloudflare build output and the Pulumi program (own package).
+    ".open-next/**",
+    ".wrangler/**",
+    "infra/**",
   ]),
 ]);
 

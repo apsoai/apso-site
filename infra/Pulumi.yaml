@@ -1,0 +1,6 @@
+name: apso-site
+description: apso.ai on Cloudflare. Zone, DNS, the Worker around the site, Worker secrets, www redirect, Access on previews.
+runtime:
+  name: nodejs
+  options:
+    typescript: true

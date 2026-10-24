@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "es2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "bin",
+    "skipLibCheck": true
+  },
+  "files": ["index.ts", "dns-records.ts"]
+}
