@@ -33,11 +33,11 @@ export const mdxComponents: MDXComponents = {
   ),
   table: (props) => (
     <div className="overflow-x-auto mb-8 rounded-lg border border-line-1">
-      <table className="w-full min-w-[720px] border-collapse text-sm" {...props} />
+      <table className="w-full min-w-[560px] border-collapse text-sm" {...props} />
     </div>
   ),
   th: (props) => (
-    <th className="bg-bg-1 text-left px-4 py-3 border-b border-line-1 font-display font-700 text-fg-1" {...props} />
+    <th className="bg-bg-1 text-left px-4 py-3 border-b border-line-1 font-display font-bold text-fg-1" {...props} />
   ),
   td: (props) => (
     <td className="px-4 py-3 border-b border-line-1 align-top text-fg-3 leading-relaxed" {...props} />

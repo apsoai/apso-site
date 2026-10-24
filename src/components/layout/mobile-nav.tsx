@@ -50,35 +50,36 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           <Image src="/images/logo.svg" alt="Apso" width={120} height={40} className="h-8 w-auto" />
           <button
             type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-sm text-fg-3 hover:bg-bg-1"
+            className="flex h-10 w-10 items-center justify-center rounded-[8px] text-fg-3 hover:bg-bg-1"
             onClick={onClose}
             aria-label="Close menu"
+            autoFocus
           >
             <X aria-hidden="true" className="h-[22px] w-[22px]" />
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-5 py-5" aria-label="Mobile navigation">
-          <div className="divide-y divide-line-1 border-y border-line-1">
+        <nav className="flex-1 overflow-y-auto px-5 pb-5 pt-1" aria-label="Mobile navigation">
+          <div className="divide-y divide-line-1 border-b border-line-1">
             {NAV_GROUPS.map((group) => {
               const isOpen = openGroup === group.label;
               return (
                 <div key={group.label}>
                   <button
                     type="button"
-                    className="flex w-full items-center justify-between py-4 text-left font-display text-[17px] font-semibold text-fg-1"
+                    className="flex w-full items-center justify-between gap-4 py-4 text-left text-[16px] font-semibold text-fg-1 focus-visible:outline-2 focus-visible:outline-brand"
                     onClick={() => setOpenGroup(isOpen ? "" : group.label)}
                     aria-expanded={isOpen}
                   >
                     <span>
                       {group.label}
-                      <span className="mt-1 block font-body text-[12px] font-normal text-fg-4">
+                      <span className="mt-0.5 block text-[13px] font-normal text-fg-4">
                         {group.description}
                       </span>
                     </span>
                     <ChevronDown
                       aria-hidden="true"
-                      className={`h-4 w-4 text-fg-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                      className={`h-4 w-4 shrink-0 text-fg-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
                     />
                   </button>
                   {isOpen && (
@@ -87,11 +88,11 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                         const external = "external" in item && item.external;
                         const content = (
                           <>
-                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-line-1 bg-bg-1 text-fg-3">
+                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] border border-line-1 bg-bg-0 text-fg-4">
                               <NavItemIcon name={item.icon} className="h-[18px] w-[18px]" />
                             </span>
                             <span className="min-w-0 flex-1">
-                              <span className="flex items-center justify-between gap-3 text-[15px] font-medium text-fg-2">
+                              <span className="flex items-center justify-between gap-3 text-[15px] font-semibold text-fg-1">
                                 {item.label}
                                 {external ? (
                                   <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5 text-fg-5" />
@@ -99,13 +100,14 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                                   <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 text-fg-5" />
                                 )}
                               </span>
-                              <span className="mt-0.5 block text-[12px] leading-[18px] text-fg-4">
+                              <span className="mt-0.5 block text-[13px] leading-5 text-fg-4">
                                 {item.description}
                               </span>
                             </span>
                           </>
                         );
-                        const className = "flex gap-3 rounded-sm px-3 py-3 hover:bg-bg-1";
+                        const className =
+                          "flex gap-3 rounded-[8px] px-3 py-3 hover:bg-bg-1 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand";
 
                         return external ? (
                           <a
@@ -130,17 +132,15 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                         const external = "external" in featured && featured.external;
                         const content = (
                           <>
-                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-white/15 bg-white/10 text-accent">
+                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] border border-brand/15 bg-bg-0 text-brand">
                               <NavItemIcon name={featured.icon} className="h-[18px] w-[18px]" />
                             </span>
                             <span className="min-w-0 flex-1">
-                              <span className="block font-mono text-[9px] uppercase text-accent">
-                                {featured.eyebrow}
-                              </span>
-                              <span className="mt-1 block font-display text-[15px] font-semibold text-white">
+                              <span className="block text-[13px] font-medium text-fg-4">{featured.eyebrow}</span>
+                              <span className="mt-1 block font-display text-[18px] font-bold leading-6 text-fg-1">
                                 {featured.title}
                               </span>
-                              <span className="mt-1 flex items-center gap-1.5 text-[12px] font-medium text-white/70">
+                              <span className="mt-2 flex items-center gap-1.5 text-[14px] font-semibold text-brand">
                                 {featured.action}
                                 {external ? (
                                   <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" />
@@ -151,7 +151,8 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                             </span>
                           </>
                         );
-                        const className = "mt-3 flex gap-3 rounded-sm bg-navy p-4";
+                        const className =
+                          "mt-3 flex gap-3 rounded-[8px] border border-brand/15 bg-brand-soft p-4 focus-visible:outline-2 focus-visible:outline-brand";
 
                         return external ? (
                           <a
@@ -184,7 +185,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-sm border border-line-1 px-2 py-2.5 text-center text-sm font-medium text-fg-2"
+                  className="rounded-[8px] border border-line-1 px-2 py-2.5 text-center text-[14px] font-medium text-fg-2 hover:bg-bg-1"
                   onClick={onClose}
                 >
                   {link.label}
@@ -193,7 +194,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="rounded-sm border border-line-1 px-2 py-2.5 text-center text-sm font-medium text-fg-2"
+                  className="rounded-[8px] border border-line-1 px-2 py-2.5 text-center text-[14px] font-medium text-fg-2 hover:bg-bg-1"
                   onClick={onClose}
                 >
                   {link.label}

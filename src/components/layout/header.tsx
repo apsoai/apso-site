@@ -17,28 +17,28 @@ type NavItemData = NavGroup["items"][number];
 function NavItem({ item, onNavigate }: { item: NavItemData; onNavigate: () => void }) {
   const external = "external" in item && item.external;
   const className =
-    "group/item flex min-h-[86px] items-center gap-3 rounded-sm px-3 py-3 transition-colors hover:bg-bg-1 focus-visible:bg-bg-1 focus-visible:outline-none";
+    "group/item flex items-start gap-3 rounded-[8px] p-3 transition-colors hover:bg-bg-1 focus-visible:bg-bg-1 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand";
   const content = (
     <>
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-line-1 bg-bg-1 text-fg-3 transition-colors group-hover/item:border-brand/20 group-hover/item:bg-brand-soft group-hover/item:text-brand">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] border border-line-1 bg-bg-0 text-fg-4 transition-colors group-hover/item:border-brand/20 group-hover/item:bg-brand-soft group-hover/item:text-brand">
         <NavItemIcon name={item.icon} className="h-[18px] w-[18px]" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="flex items-center justify-between gap-3 font-display text-[15px] font-semibold text-fg-1">
+        <span className="flex items-start justify-between gap-3 text-[15px] font-semibold leading-6 text-fg-1">
           {item.label}
           {external ? (
             <ArrowUpRight
               aria-hidden="true"
-              className="h-3.5 w-3.5 shrink-0 text-fg-5 transition-transform group-hover/item:-translate-y-0.5 group-hover/item:translate-x-0.5"
+              className="mt-[5px] h-3.5 w-3.5 shrink-0 text-fg-5 transition-transform group-hover/item:-translate-y-0.5 group-hover/item:translate-x-0.5"
             />
           ) : (
             <ArrowRight
               aria-hidden="true"
-              className="h-3.5 w-3.5 shrink-0 text-fg-5 transition-transform group-hover/item:translate-x-0.5"
+              className="mt-[5px] h-3.5 w-3.5 shrink-0 text-fg-5 transition-transform group-hover/item:translate-x-0.5"
             />
           )}
         </span>
-        <span className="mt-1 block text-[12px] leading-[18px] text-fg-4">{item.description}</span>
+        <span className="mt-0.5 block text-[13px] leading-5 text-fg-4">{item.description}</span>
       </span>
     </>
   );
@@ -48,14 +48,13 @@ function NavItem({ item, onNavigate }: { item: NavItemData; onNavigate: () => vo
       href={item.href}
       target="_blank"
       rel="noopener noreferrer"
-      role="menuitem"
       className={className}
       onClick={onNavigate}
     >
       {content}
     </a>
   ) : (
-    <Link href={item.href} role="menuitem" className={className} onClick={onNavigate}>
+    <Link href={item.href} className={className} onClick={onNavigate}>
       {content}
     </Link>
   );
@@ -66,13 +65,15 @@ function FeaturedMenuItem({ group, onNavigate }: { group: NavGroup; onNavigate: 
   const external = "external" in featured && featured.external;
   const content = (
     <>
-      <span className="flex h-10 w-10 items-center justify-center rounded-sm border border-white/15 bg-white/10 text-accent">
-        <NavItemIcon name={featured.icon} className="h-5 w-5" />
+      <span className="flex items-center gap-3">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] border border-brand/15 bg-bg-0 text-brand">
+          <NavItemIcon name={featured.icon} className="h-[18px] w-[18px]" />
+        </span>
+        <span className="text-[13px] font-medium text-fg-4">{featured.eyebrow}</span>
       </span>
-      <span className="mt-8 block font-mono text-[10px] uppercase text-accent">{featured.eyebrow}</span>
-      <span className="mt-3 block font-display text-[21px] font-bold leading-7 text-white">{featured.title}</span>
-      <span className="mt-3 block text-[13px] leading-5 text-white/60">{featured.description}</span>
-      <span className="mt-7 flex items-center gap-2 font-display text-[13px] font-semibold text-white">
+      <span className="mt-6 block font-display text-[22px] font-bold leading-7 text-fg-1">{featured.title}</span>
+      <span className="mt-3 block text-[14px] leading-[22px] text-fg-4">{featured.description}</span>
+      <span className="mt-auto flex items-center gap-2 pt-6 text-[14px] font-semibold text-brand group-hover/featured:underline">
         {featured.action}
         {external ? (
           <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
@@ -83,21 +84,20 @@ function FeaturedMenuItem({ group, onNavigate }: { group: NavGroup; onNavigate: 
     </>
   );
   const className =
-    "group/featured flex h-full min-h-[280px] flex-col bg-navy p-6 transition-colors hover:bg-[#002354] focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-accent";
+    "group/featured flex h-full flex-col border-t border-line-1 bg-brand-soft p-6 lg:border-l lg:border-t-0 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand";
 
   return external ? (
     <a
       href={featured.href}
       target="_blank"
       rel="noopener noreferrer"
-      role="menuitem"
       className={className}
       onClick={onNavigate}
     >
       {content}
     </a>
   ) : (
-    <Link href={featured.href} role="menuitem" className={className} onClick={onNavigate}>
+    <Link href={featured.href} className={className} onClick={onNavigate}>
       {content}
     </Link>
   );
@@ -109,6 +109,7 @@ export function Header() {
   const headerRef = useRef<HTMLElement>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pinnedMenuRef = useRef<NavGroupLabel | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   const cancelMenuClose = () => {
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
@@ -136,6 +137,9 @@ export function Header() {
     };
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        // Return focus to the open menu's trigger so keyboard users keep their place.
+        const trigger = headerRef.current?.querySelector<HTMLElement>('nav button[aria-expanded="true"]');
+        if (trigger && headerRef.current?.contains(document.activeElement)) trigger.focus();
         pinnedMenuRef.current = null;
         setActiveMenu(null);
       }
@@ -188,7 +192,6 @@ export function Header() {
                         isOpen ? "bg-bg-1 text-fg-1" : "text-fg-3"
                       }`}
                       aria-expanded={isOpen}
-                      aria-haspopup="menu"
                       aria-controls={`nav-menu-${group.label.toLowerCase()}`}
                       onClick={() => {
                         cancelMenuClose();
@@ -213,21 +216,14 @@ export function Header() {
                       <div className="fixed left-1/2 top-16 w-[min(880px,calc(100vw-32px))] -translate-x-1/2 pt-2">
                         <div
                           id={`nav-menu-${group.label.toLowerCase()}`}
-                          role="menu"
-                          aria-label={`${group.label} menu`}
-                          className="grid overflow-hidden rounded-sm border border-line-1 bg-bg-0 shadow-[0_24px_70px_rgba(15,23,42,0.18)] lg:grid-cols-[1fr_270px]"
+                          className="grid overflow-hidden rounded-[12px] border border-line-1 bg-bg-0 shadow-[0_20px_50px_rgba(17,24,39,0.12)] lg:grid-cols-[1fr_280px]"
                         >
                           <div className="flex flex-col p-3">
-                            <div className="flex items-end justify-between gap-5 border-b border-line-1 px-3 pb-3 pt-1">
-                              <div>
-                                <p className="font-mono text-[10px] uppercase text-brand">Explore {group.label}</p>
-                                <p className="mt-1 text-[12px] text-fg-4">{group.description}</p>
-                              </div>
-                              <span className="shrink-0 font-mono text-[10px] text-fg-5">
-                                0{group.items.length}
-                              </span>
+                            <div className="border-b border-line-1 px-3 pb-3 pt-2">
+                              <p className="text-[15px] font-semibold text-fg-1">Explore {group.label}</p>
+                              <p className="mt-0.5 text-[13px] text-fg-4">{group.description}</p>
                             </div>
-                            <div className="mt-1 grid flex-1 auto-rows-fr grid-cols-2 gap-0.5">
+                            <div className="mt-2 grid flex-1 grid-cols-2 content-start gap-1">
                               {group.items.map((item) => (
                                 <NavItem
                                   key={item.label}
@@ -285,6 +281,7 @@ export function Header() {
             <button
               type="button"
               className="-mr-2 flex h-10 w-10 items-center justify-center rounded-sm text-fg-3 hover:bg-bg-1 lg:hidden"
+              ref={menuButtonRef}
               onClick={() => setMobileOpen(true)}
               aria-label="Open menu"
             >
@@ -293,7 +290,13 @@ export function Header() {
           </div>
         </Container>
       </header>
-      <MobileNav open={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <MobileNav
+        open={mobileOpen}
+        onClose={() => {
+          setMobileOpen(false);
+          menuButtonRef.current?.focus();
+        }}
+      />
     </>
   );
 }
