@@ -42,6 +42,7 @@ Secrets live in 1Password (Mavric account, vault `apso-site`), one item per secr
 | Variable | 1Password reference |
 | --- | --- |
 | `GHL_API_TOKEN` | `op://apso-site/ghl-private-integration/token` (GoHighLevel Private Integration token, Apso sub-account, contacts write) |
+| `GHL_LOCATION_ID` | `op://apso-site/ghl-private-integration/location_id` |
 | `RESEND_API_KEY` | `op://apso-site/resend/credential` (contact form fallback email) |
 
 - Local dev with real values: `scripts/with-secrets.sh npm run dev`
