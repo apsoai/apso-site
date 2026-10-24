@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { ExternalLink } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHero } from "@/components/marketing/page-hero";
@@ -8,13 +7,11 @@ import { APP_URL, BOOKING_URL, DOCS_URL, GITHUB_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Company",
-  description: "Why the Mavric Technology team built Apso as an owned, consistent backend foundation for AI-built software.",
+  description: "Why Apso was built: an owned, consistent backend foundation for AI-built software.",
 };
 
-const partners = [
-  { initials: "MC", name: "Matt Cullerton", role: "Partner · Sales and marketing", linkedin: "https://www.linkedin.com/in/mattcullerton/" },
-  { initials: "IA", name: "Inam Alam", role: "Partner · Delivery and engineering", linkedin: undefined },
-  { initials: "TI", name: "Tahir Iqbal", role: "Partner · People and operations", linkedin: undefined },
+const people = [
+  { initials: "MC", name: "Matt Cullerton", role: "Founder", linkedin: "https://www.linkedin.com/in/mattcullerton/" },
 ];
 
 const linkClass = "font-medium text-brand hover:text-brand-hover hover:underline";
@@ -24,27 +21,14 @@ export default function CompanyPage() {
     <>
       <PageHero
         title="We built Apso to get the backend foundation right"
-        description="Apso comes from years of building software at Mavric Technology. We kept seeing the same service work repeated by hand, then reproduced inconsistently by coding agents. We built a more dependable path from product intent to owned backend code."
-        visual={
-          <figure className="mx-auto w-full max-w-[460px]">
-            <Image
-              src="/images/dev-team.png"
-              alt="Portraits of the Mavric team"
-              width={462}
-              height={373}
-              priority
-              className="mx-auto h-auto w-full max-w-[430px]"
-            />
-            <figcaption className="mt-3 text-[14px] text-fg-4">The Mavric team that builds and runs Apso.</figcaption>
-          </figure>
-        }
+        description="Apso comes from years of building software for clients. We kept seeing the same service work repeated by hand, then reproduced inconsistently by coding agents. We built a more dependable path from product intent to owned backend code."
       />
 
       <section className="bg-bg-1 py-10 md:pb-12 md:pt-8">
         <Container>
-          <h2 className="font-display text-[28px] font-extrabold text-fg-1 md:text-[32px]">Partners</h2>
-          <div className="mt-7 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {partners.map(({ initials, name, role, linkedin }) => (
+          <h2 className="font-display text-[28px] font-extrabold text-fg-1 md:text-[32px]">Founder</h2>
+          <div className="mt-7 grid max-w-[420px] gap-6">
+            {people.map(({ initials, name, role, linkedin }) => (
               <article key={name} className="flex items-center gap-4 rounded-[12px] border border-line-1 bg-bg-0 p-6">
                 <span aria-hidden="true" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-brand-soft font-display text-[18px] font-bold text-brand">
                   {initials}
@@ -84,9 +68,6 @@ export default function CompanyPage() {
             </div>
 
             <dl className="divide-y divide-line-1 rounded-[12px] border border-line-1 text-[14px]">
-              <Fact label="Company">
-                <a href="https://mavrictech.com" target="_blank" rel="noopener noreferrer" className={linkClass}>Mavric Technology, LLC</a>
-              </Fact>
               <Fact label="Code">
                 <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className={linkClass}>github.com/apsoai</a>
               </Fact>
