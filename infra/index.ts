@@ -86,35 +86,6 @@ if (serveApex) {
   });
 }
 
-// Preview URLs (<version>-apso-site.<subdomain>.workers.dev) behind Google sign-in for the two domains.
-const google = new cloudflare.ZeroTrustAccessIdentityProvider("google", {
-  accountId,
-  name: "Google",
-  type: "google",
-  config: {
-    clientId: env("ACCESS_GOOGLE_CLIENT_ID", "op://apso-site/cloudflare-access-google/client_id"),
-    clientSecret: pulumi.secret(env("ACCESS_GOOGLE_CLIENT_SECRET", "op://apso-site/cloudflare-access-google/client_secret")),
-  },
-});
-const team = new cloudflare.ZeroTrustAccessPolicy("team", {
-  accountId,
-  name: "apso.ai and mavrictech.com",
-  decision: "allow",
-  includes: [{ emailDomain: { domain: "apso.ai" } }, { emailDomain: { domain: "mavrictech.com" } }],
-});
-const previews = `*-${WORKER}.${workersDevSubdomain}.workers.dev`;
-new cloudflare.ZeroTrustAccessApplication("previews", {
-  accountId,
-  name: "apso-site previews",
-  type: "self_hosted",
-  domain: previews,
-  destinations: [{ type: "public", uri: previews }],
-  allowedIdps: [google.id],
-  autoRedirectToIdentity: true,
-  sessionDuration: "24h",
-  policies: [{ id: team.id, precedence: 1 }],
-});
-
 export const nameServers = zone.nameServers;
 export const workersDevUrl = `https://${WORKER}.${workersDevSubdomain}.workers.dev`;
-export const previewPattern = previews;
+export const previewPattern = `*-${WORKER}.${workersDevSubdomain}.workers.dev`; // public, per Matt 2026-10-24
