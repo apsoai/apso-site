@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
-import { CalendarDays, ChevronDown, CircleCheck, ExternalLink } from "lucide-react";
+import Script from "next/script";
+import { CalendarDays, ChevronDown, CircleCheck } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { submitContact, type ContactState } from "@/app/(marketing)/contact/action";
 import { CONTACT_TOPICS } from "@/app/(marketing)/contact/topics";
@@ -13,20 +14,11 @@ const initialState: ContactState = { success: false };
 const control =
   "w-full rounded-[8px] border bg-bg-0 px-[14px] text-[15px] text-fg-1 placeholder:text-fg-5 transition-colors focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30";
 
-function CalendarLink({ className = "" }: { className?: string }) {
-  return (
-    <a
-      href={BOOKING_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-[8px] border border-line-1 bg-bg-0 px-5 text-[15px] font-medium text-fg-1 transition-colors hover:bg-bg-2 ${className}`}
-    >
-      <CalendarDays aria-hidden="true" className="h-4 w-4" />
-      Open the calendar
-      <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
-      <span className="sr-only">(opens in a new tab)</span>
-    </a>
-  );
+function bookingSrc(name = "", email = "") {
+  // GoHighLevel prefills first_name, last_name and email from the query string (checked on the live widget).
+  const [first = "", ...rest] = name.trim().split(/\s+/);
+  const q = new URLSearchParams({ first_name: first, last_name: rest.join(" "), email });
+  return `${BOOKING_URL}?${q}`;
 }
 
 function Field({
@@ -76,26 +68,38 @@ export function ContactForm() {
     <section id="contact-form" className="pb-24 pt-6">
       <Container>
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
-          <aside className="order-2 flex flex-col gap-4 rounded-[12px] bg-navy p-8 text-white lg:order-1 lg:w-[520px] lg:shrink-0">
-            <SittingDogs width={118} className="hidden lg:ml-[90px] lg:mt-[18px] lg:block" />
-            <h2 className="font-display text-[28px] font-extrabold">Product and enterprise</h2>
-            <p className="text-[16px] leading-[1.6] text-[#D1D5DB]">
-              Architecture fit, team rollout, pricing, governance, and running in your own cloud.
-            </p>
-            <CalendarLink className="w-full" />
-            <p className="text-[12px] text-[#9CA3AF]">Opens our booking page on api.leadconnectorhq.com</p>
-          </aside>
+          {!state.success && (
+            <aside className="order-2 flex flex-col gap-4 rounded-[12px] bg-navy p-8 text-white lg:order-1 lg:w-[520px] lg:shrink-0">
+              <SittingDogs width={118} className="hidden lg:ml-[90px] lg:mt-[18px] lg:block" />
+              <h2 className="font-display text-[28px] font-extrabold">Product and enterprise</h2>
+              <p className="text-[16px] leading-[1.6] text-[#D1D5DB]">
+                Architecture fit, team rollout, pricing, governance, and running in your own cloud.
+              </p>
+              <p className="flex items-start gap-3 text-[15px] leading-[1.6] text-[#D1D5DB]">
+                <CalendarDays aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-white" />
+                Send the form, then pick a time for a call on this page.
+              </p>
+            </aside>
+          )}
 
           <div className="order-1 min-w-0 flex-1 lg:order-2">
             {state.success ? (
-              <div role="status" className="flex flex-col items-start gap-5 rounded-[12px] bg-[#ECFDF3] p-8">
-                <CircleCheck aria-hidden="true" className="h-8 w-8 text-[#16A34A]" />
-                <h2 className="font-display text-[28px] font-extrabold text-fg-1">Message sent</h2>
-                <p className="text-[16px] leading-[1.6] text-fg-3">
-                  Thanks, {state.name}. We will reply to {state.email}.
-                </p>
-                <p className="text-[16px] leading-[1.6] text-fg-3">Want to talk sooner? Book a call and pick a time now.</p>
-                <CalendarLink />
+              <div className="flex flex-col gap-5 sm:rounded-[12px] sm:border sm:border-line-1 sm:p-8">
+                <div role="status" className="flex flex-col gap-2">
+                  <h2 className="flex items-center gap-3 font-display text-[28px] font-extrabold text-fg-1">
+                    <CircleCheck aria-hidden="true" className="h-7 w-7 shrink-0 text-[#16A34A]" />
+                    Thanks, {state.name?.split(" ")[0]}. Now pick a time.
+                  </h2>
+                  <p className="text-[16px] leading-[1.6] text-fg-3">We have your message. Choose a time below for a call with us.</p>
+                </div>
+                <iframe
+                  src={bookingSrc(state.name, state.email)}
+                  title="Book a call with Apso"
+                  scrolling="no"
+                  className="min-h-[480px] w-full overflow-hidden border-0"
+                />
+                <Script src="https://link.msgsndr.com/js/form_embed.js" strategy="afterInteractive" />
+                <p className="text-[14px] text-fg-4">Not ready to book? We will reply to {state.email}.</p>
               </div>
             ) : (
               <form action={formAction} className="flex flex-col gap-5 rounded-[12px] border border-line-1 p-6 sm:p-8">
@@ -151,7 +155,7 @@ export function ContactForm() {
                     disabled={pending}
                     className="inline-flex min-h-12 items-center justify-center rounded-[8px] bg-brand px-5 text-[15px] font-medium text-white transition-colors hover:bg-brand-hover disabled:opacity-60"
                   >
-                    {pending ? "Sending..." : "Send message"}
+                    {pending ? "Sending..." : "Send and pick a time"}
                   </button>
                 </div>
               </form>
