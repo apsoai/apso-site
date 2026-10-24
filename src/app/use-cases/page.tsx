@@ -117,7 +117,8 @@ export default function UseCasesIndex() {
           {patterns.map(({ title, body, link, note }) => (
             <div
               key={title}
-              className="flex flex-col gap-2.5 border-b border-line-1 py-6 md:flex-row md:items-center md:justify-between md:gap-8 md:py-7"
+              id={title.toLowerCase().replace(/[^a-z]+/g, "-")}
+              className="scroll-mt-24 flex flex-col gap-2.5 border-b border-line-1 py-6 md:flex-row md:items-center md:justify-between md:gap-8 md:py-7"
             >
               <div className="max-w-[560px]">
                 <h3 className="font-display text-[22px] font-bold text-fg-1 md:text-[26px]">{title}</h3>

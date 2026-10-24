@@ -54,7 +54,7 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section className="bg-[#0b1220] py-14 text-white md:py-[120px]">
+    <section id="how-it-works" className="scroll-mt-20 bg-[#0b1220] py-14 text-white md:py-[120px]">
       <Container>
         <h2 className="max-w-[960px] font-display text-[34px] font-extrabold leading-[1.02] tracking-[-0.02em] text-white md:text-[60px]">
           Turn your coding agent into a backend expert with Apso

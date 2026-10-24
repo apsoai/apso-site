@@ -11,7 +11,7 @@ const SPECS = [
 
 export function FeatureGrid() {
   return (
-    <section className="bg-bg-0 py-14 md:py-28">
+    <section id="generator" className="scroll-mt-20 bg-bg-0 py-14 md:py-28">
       <Container>
         <div className="grid gap-10 lg:grid-cols-[420px_minmax(0,700px)] lg:justify-between lg:gap-24">
           <div>

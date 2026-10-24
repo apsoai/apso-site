@@ -1,6 +1,6 @@
 import { CalendarDays, Check } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { APP_URL, BOOKING_URL } from "@/lib/constants";
+import { APP_URL } from "@/lib/constants";
 
 type Plan = {
   name: string;
@@ -46,20 +46,18 @@ const workspacePlans: Plan[] = [
 
 const businessPlan: Plan = {
   name: "Business",
-  price: "Custom",
-  period: "talk to sales",
+  price: "Talk to sales",
+  period: "",
   description:
-    "Apso runs the DevOps for the whole workspace, in Apso's cloud or in your own cloud account, with single sign-on, service agreements, and rollout support.",
+    "DevOps as a service. Our team sets up and runs Apso in Apso's cloud or your own cloud account, with professional services available.",
   features: [
     "Everything in Team",
-    "Managed DevOps for every service",
-    "Run in Apso's cloud or yours",
-    "SSO",
-    "Service agreements",
-    "Rollout support",
+    "DevOps as a service",
+    "Run in Apso's cloud or your own",
+    "Professional services available",
   ],
   cta: "Talk to sales",
-  href: BOOKING_URL,
+  href: "/contact",
 };
 
 const serviceTiers: ServiceTier[] = [
