@@ -77,6 +77,12 @@ new cloudflare.DnsRecord("spf", {
   zoneId: zone.id, name: DOMAIN, type: "TXT", content: '"v=spf1 include:_spf.google.com ~all"',
   ttl: 300, comment: "SPF for Google Workspace mail",
 });
+// Public key generated in Google Admin > Gmail > Authenticate email (2048-bit, selector "google").
+// Left unquoted: it is longer than 255 characters, and Cloudflare splits it into strings itself.
+new cloudflare.DnsRecord("dkim-google", {
+  zoneId: zone.id, name: `google._domainkey.${DOMAIN}`, type: "TXT", ttl: 300, comment: "DKIM for Google Workspace mail",
+  content: "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2oyf4u68wIGOD8xoleCamB0VZCgmsunRm70aVyJLh9qxE8g3a5jrzqXVwXQbBRwkUUr2+0NsNLhm8sOENLBwB0aqPckC+xP5YGqmRfFpAYV1We+hrDjmgHzM4QmFT5bkYRFBFgdSanBkPBaIaF3MxUHWua+Rdbp2k0p806+KaEL2Q3Zpj5n8X9ILz9Rq/JnaQ4B4mduSH+zuqvqbnKKoW1Yjp2Sz6iL5tAEW2P3hKoH9ijwZpYQSnPFaEd1Khq1/+5+cREgAw7xGkuizwKkD0QxQegvvtDChodTS1lFu7WSCYTcydssnSF1EN5D096Ee0fvvCxQikx7e2wAcH6BY8wIDAQAB",
+});
 
 // Site records copied from Route 53, so the nameserver switch changes nothing: apex still reaches
 // Amplify's CloudFront, www still points where it did. Cutover only flips `proxied` and adds the
