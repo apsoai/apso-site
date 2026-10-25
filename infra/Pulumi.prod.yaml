@@ -3,7 +3,7 @@
 # (encryptedkey is the KMS-wrapped data key, safe to commit). See infra/README.md.
 config:
   # Phase 3 only: set to true at the cutover to put the Worker on apso.ai and turn on the www redirect.
-  apso-site:serveApex: "false"
+  apso-site:serveApex: "true"
   apso-site:accountId: 7c0690992acb27aed18a97de0fe6a290
   apso-site:workersDevSubdomain: matt-c06
 secretsprovider: awskms://alias/apso-site-pulumi?region=us-east-1&awssdk=v2&profile=mavric
