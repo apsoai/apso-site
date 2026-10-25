@@ -71,11 +71,22 @@ new command.local.Command("worker-secrets", {
   environment: { CLOUDFLARE_ACCOUNT_ID: accountId },
 }, { dependsOn: [worker] });
 
+// Site records copied from Route 53, so the nameserver switch changes nothing: apex still reaches
+// Amplify's CloudFront, www still points where it did. Cutover only flips `proxied` and adds the
+// route below, both in-place updates; a custom domain would need the apex record deleted first.
+// Rollback is serveApex=false.
+new cloudflare.DnsRecord("apex", {
+  zoneId: zone.id, name: DOMAIN, type: "CNAME", content: "d2iezt284du3e2.cloudfront.net",
+  proxied: serveApex, ttl: serveApex ? 1 : 300, comment: "Site. Amplify CloudFront until cutover",
+});
+new cloudflare.DnsRecord("www", {
+  zoneId: zone.id, name: `www.${DOMAIN}`, type: "CNAME", content: "getapso.com",
+  proxied: serveApex, ttl: serveApex ? 1 : 300, comment: "Site. Redirected to apex after cutover",
+});
+
 // Phase 3 (cutover): the Worker on the apex, and www redirecting to it.
 if (serveApex) {
-  new cloudflare.WorkersCustomDomain("apex", { accountId, hostname: DOMAIN, service: WORKER, zoneId: zone.id }, { dependsOn: [worker] });
-  // www needs a proxied record for the redirect rule to see its requests; 100:: is the standard placeholder.
-  new cloudflare.DnsRecord("www", { zoneId: zone.id, name: `www.${DOMAIN}`, type: "AAAA", content: "100::", proxied: true, ttl: 1 });
+  new cloudflare.WorkersRoute("apex", { zoneId: zone.id, pattern: `${DOMAIN}/*`, script: WORKER }, { dependsOn: [worker] });
   new cloudflare.Ruleset("www-redirect", {
     zoneId: zone.id,
     name: "www to apex",
