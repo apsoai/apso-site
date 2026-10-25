@@ -5,7 +5,7 @@
   --hm-panel-2: #111a2e;
   --hm-panel-line: #1e293b;
   --hm-panel-ink: #e2e8f0;
-  --hm-panel-muted: #64748b;
+  --hm-panel-muted: #7c8aa0;
   --hm-panel-soft: #94a3b8;
   --hm-line: #e2e8f0;
   --hm-green: #4ade80;
@@ -181,10 +181,9 @@
 .hm .sc-ask { display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding-bottom: 6px; }
 .hm .ask { align-self: flex-start; background: #fff; color: #0f172a; font: 500 12px var(--font-body); border-radius: 12px 12px 12px 4px; padding: 6px 11px; min-height: 30px; transition: opacity 260ms, transform 360ms var(--hm-ease); }
 .hm .scrolly .sc-ask:not(.on) .ask { opacity: 0; transform: translateY(6px); }
-.hm .ticks { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; font: 11px var(--font-mono); color: var(--hm-panel-soft); }
+.hm .ticks { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; font: 12px var(--font-mono); color: var(--hm-panel-soft); }
 .hm .ticks li { display: flex; gap: 5px; align-items: center; transition: opacity 240ms; }
 .hm .ticks svg { color: var(--hm-green); transition: opacity 240ms; }
-.hm .scrolly .sc-ask li:not(.t) { opacity: 0.3; }
 .hm .scrolly .sc-ask li:not(.t) svg { opacity: 0; }
 .hm .step .step-num { transition: background 300ms var(--hm-ease), color 300ms; }
 .hm .step h3, .hm .step p { transition: color 300ms; }

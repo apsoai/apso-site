@@ -10,7 +10,7 @@ export function CtaBand() {
           <h2 className="font-display text-[38px] font-extrabold leading-[1.0] tracking-[-0.02em] text-white md:text-[68px]">
             Give your product a backend that can grow with it
           </h2>
-          <p className="max-w-[620px] text-[17px] leading-[1.65] text-[#dbeafe] md:text-[19px]">
+          <p className="max-w-[620px] text-[17px] leading-[1.65] text-white md:text-[19px]">
             Start in the service builder or connect Apso to Claude or Codex. Apso teaches your agent the backend
             conventions, gives it the project tools, and keeps the generated service consistent as it grows.
           </p>
