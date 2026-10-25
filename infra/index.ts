@@ -94,6 +94,16 @@ if (serveApex) {
     phase: "http_request_dynamic_redirect",
     rules: [{
       action: "redirect",
+      expression: `(http.host eq "${DOMAIN}" and not ssl)`,
+      actionParameters: {
+        fromValue: {
+          statusCode: 301,
+          preserveQueryString: true,
+          targetUrl: { expression: `concat("https://${DOMAIN}", http.request.uri.path)` },
+        },
+      },
+    }, {
+      action: "redirect",
       expression: `(http.host eq "www.${DOMAIN}")`,
       actionParameters: {
         fromValue: {
