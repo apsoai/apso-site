@@ -71,6 +71,13 @@ new command.local.Command("worker-secrets", {
   environment: { CLOUDFLARE_ACCOUNT_ID: accountId },
 }, { dependsOn: [worker] });
 
+// Mail authentication added after the move (Route 53 had none). Google Workspace is the only sender
+// on the apex; Resend uses send.apso.ai, which carries its own SPF.
+new cloudflare.DnsRecord("spf", {
+  zoneId: zone.id, name: DOMAIN, type: "TXT", content: '"v=spf1 include:_spf.google.com ~all"',
+  ttl: 300, comment: "SPF for Google Workspace mail",
+});
+
 // Site records copied from Route 53, so the nameserver switch changes nothing: apex still reaches
 // Amplify's CloudFront, www still points where it did. Cutover only flips `proxied` and adds the
 // route below, both in-place updates; a custom domain would need the apex record deleted first.
