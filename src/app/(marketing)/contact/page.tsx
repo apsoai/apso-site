@@ -3,6 +3,7 @@ import { PageHero } from "@/components/marketing/page-hero";
 import { ContactForm } from "@/components/marketing/contact-form";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/contact" },
   title: "Contact",
   description: "Contact the Apso team about product fit, deployment, enterprise requirements, support, or partnerships.",
 };

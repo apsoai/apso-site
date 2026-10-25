@@ -6,6 +6,7 @@ import { ClosingBand } from "@/components/content/closing-band";
 import { APP_URL, BOOKING_URL, DOCS_URL, GITHUB_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/company" },
   title: "Company",
   description: "Why Apso was built: an owned, consistent backend foundation for AI-built software.",
 };

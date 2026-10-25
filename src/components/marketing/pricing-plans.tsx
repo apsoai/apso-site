@@ -1,6 +1,8 @@
 import { CalendarDays, Check } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { APP_URL } from "@/lib/constants";
+import { JsonLd } from "@/components/seo/json-ld";
+import { faqPageSchema } from "@/lib/schema";
 
 type Plan = {
   name: string;
@@ -23,7 +25,7 @@ type ServiceTier = {
   comingSoon?: boolean;
 };
 
-const workspacePlans: Plan[] = [
+export const workspacePlans: Plan[] = [
   {
     name: "Free",
     price: "$0",
@@ -44,7 +46,7 @@ const workspacePlans: Plan[] = [
   },
 ];
 
-const businessPlan: Plan = {
+export const businessPlan: Plan = {
   name: "Business",
   price: "Talk to sales",
   period: "",
@@ -60,7 +62,7 @@ const businessPlan: Plan = {
   href: "/contact",
 };
 
-const serviceTiers: ServiceTier[] = [
+export const serviceTiers: ServiceTier[] = [
   {
     name: "Free",
     price: "$0",
@@ -133,6 +135,7 @@ function external(href: string) {
 export function PricingPlans() {
   return (
     <>
+      <JsonLd data={faqPageSchema(faqItems)} />
       <section id="plans" className="scroll-mt-20 bg-bg-0 pb-[72px] pt-10">
         <Container>
           <h2 className="font-display text-[28px] font-bold text-fg-1 md:text-[32px]">Workspace plans</h2>

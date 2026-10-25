@@ -14,6 +14,7 @@ export interface PolicySection {
 }
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/privacy-policy" },
   title: "Privacy Policy",
   description: "How Mavric Technology collects, uses, shares, and protects information when you use Apso.",
 };

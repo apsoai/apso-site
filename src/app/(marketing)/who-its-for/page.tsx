@@ -3,6 +3,7 @@ import { Container } from "@/components/ui/container";
 import { ClosingBand } from "@/components/content/closing-band";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/who-its-for" },
   title: "Who Apso Is For",
   description: "See how founders, delivery teams, and platform teams use Apso to generate consistent backend services they own.",
 };

@@ -5,6 +5,7 @@ import { PricingPlans } from "@/components/marketing/pricing-plans";
 import { SittingDogs } from "@/components/marketing/sitting-dogs";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/pricing" },
   title: "Pricing",
   description: "Generate backend code for free. Add team controls with a workspace plan, choose a tier for each service, or have Apso run DevOps in your own cloud on Business.",
 };

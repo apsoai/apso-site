@@ -5,6 +5,9 @@ import remarkGfm from "remark-gfm";
 import { getContentBySlug, getContentSlugs } from "@/lib/content";
 import { CompareLayout, compareMdxComponents } from "@/components/content/compare-layout";
 import type { CompareFrontmatter } from "@/types/content";
+import { JsonLd } from "@/components/seo/json-ld";
+import { articleSchema, breadcrumbSchema } from "@/lib/schema";
+import { SITE_URL } from "@/lib/constants";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -21,6 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: item.frontmatter.title,
     description: item.frontmatter.description,
+    alternates: { canonical: `/compare/${slug}` },
   };
 }
 
@@ -28,8 +32,16 @@ export default async function ComparePage({ params }: PageProps) {
   const { slug } = await params;
   const item = getContentBySlug<CompareFrontmatter>("compare", slug);
   if (!item) notFound();
+  const { title, description, date } = item.frontmatter;
 
   return (
+    <>
+    <JsonLd
+      data={[
+        articleSchema({ title, description, url: `${SITE_URL}/compare/${slug}`, datePublished: date }),
+        breadcrumbSchema([{ name: "Compare", url: "/compare" }, { name: title }]),
+      ]}
+    />
     <CompareLayout
       title={item.frontmatter.title}
       description={item.frontmatter.description}
@@ -42,5 +54,6 @@ export default async function ComparePage({ params }: PageProps) {
         options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
       />
     </CompareLayout>
+    </>
   );
 }

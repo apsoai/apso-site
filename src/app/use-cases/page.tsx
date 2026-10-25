@@ -4,6 +4,7 @@ import Link from "next/link";
 import { APP_URL, DOCS_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/use-cases" },
   title: "Backend Use Cases",
   description: "See how agents and teams use Apso to build SaaS products, internal tools, client systems, and stable API foundations.",
 };

@@ -5,6 +5,7 @@ import { getAllContent } from "@/lib/content";
 import type { CompareFrontmatter } from "@/types/content";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/compare" },
   title: "Compare Apso to Backend Platforms",
   description: "Compare Apso with managed backend platforms, visual builders, and generated API products by ownership, runtime, and workflow.",
 };

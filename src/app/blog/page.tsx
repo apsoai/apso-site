@@ -9,6 +9,7 @@ import { APP_URL, DOCS_URL } from "@/lib/constants";
 import type { BlogFrontmatter } from "@/types/content";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/blog" },
   title: "Blog",
   description: "Product notes and technical guides about agent-driven backend generation, code ownership, and backend architecture.",
 };

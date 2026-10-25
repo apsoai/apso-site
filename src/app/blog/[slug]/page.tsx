@@ -6,6 +6,9 @@ import { getAllContent, getContentBySlug, getContentSlugs } from "@/lib/content"
 import { mdxComponents } from "@/components/content/mdx-components";
 import { MdxLayout } from "@/components/content/mdx-layout";
 import type { BlogFrontmatter } from "@/types/content";
+import { JsonLd } from "@/components/seo/json-ld";
+import { articleSchema, breadcrumbSchema } from "@/lib/schema";
+import { SITE_URL } from "@/lib/constants";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -22,6 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: post.frontmatter.title,
     description: post.frontmatter.description,
+    alternates: { canonical: `/blog/${slug}` },
   };
 }
 
@@ -35,7 +39,16 @@ export default async function BlogPost({ params }: PageProps) {
   const newer = posts[posts.findIndex((p) => p.slug === slug) - 1];
   const tag = post.frontmatter.tags?.[0];
 
+  const { title, description, date, author } = post.frontmatter;
+
   return (
+    <>
+    <JsonLd
+      data={[
+        articleSchema({ title, description, url: `${SITE_URL}/blog/${slug}`, datePublished: date, author }),
+        breadcrumbSchema([{ name: "Blog", url: "/blog" }, { name: title }]),
+      ]}
+    />
     <MdxLayout
       title={post.frontmatter.title}
       description={post.frontmatter.description}
@@ -51,5 +64,6 @@ export default async function BlogPost({ params }: PageProps) {
         options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
       />
     </MdxLayout>
+    </>
   );
 }

@@ -5,8 +5,11 @@ import { ReadHeader } from "@/components/content/read-header";
 import { OnThisPage } from "@/components/content/on-this-page";
 import { ClosingBand } from "@/components/content/closing-band";
 import { DOCS_URL } from "@/lib/constants";
+import { JsonLd } from "@/components/seo/json-ld";
+import { faqPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/faq" },
   title: "Frequently Asked Questions",
   description: "Answers about Apso generation, agent workflows, backend ownership, deployment, languages, authentication, and pricing.",
 };
@@ -87,6 +90,7 @@ const topics = groups.map(({ id, label, items }) => ({ id, label, count: items.l
 export default function FaqPage() {
   return (
     <>
+      <JsonLd data={faqPageSchema(groups.flatMap((g) => g.items))} />
       <ReadHeader title="Clear answers about the backend foundation">
         Understand what Apso generates, how it works with your coding agent, where the service runs, and what your team owns.
       </ReadHeader>

@@ -12,6 +12,9 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { HomeMotion } from "@/components/home/home-motion";
 import "@/components/home/home.css";
 import { organizationSchema, softwareApplicationSchema } from "@/lib/schema";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default function HomePage() {
   return (

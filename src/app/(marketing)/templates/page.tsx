@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { TemplateLibrary } from "@/components/templates/template-library";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/templates" },
   title: "Starter Backends",
   description: "Browse starter data models for SaaS, CRM, commerce, internal tools, and industry applications.",
 };
