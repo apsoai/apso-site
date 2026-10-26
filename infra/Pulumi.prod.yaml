@@ -1,0 +1,10 @@
+# Production stack. Secrets are not stored here: index.ts reads them from the environment that
+# scripts/with-secrets.sh fills from 1Password. State secrets are encrypted with the KMS key below
+# (encryptedkey is the KMS-wrapped data key, safe to commit). See infra/README.md.
+config:
+  # Phase 3 only: set to true at the cutover to put the Worker on apso.ai and turn on the www redirect.
+  apso-site:serveApex: "true"
+  apso-site:accountId: 7c0690992acb27aed18a97de0fe6a290
+  apso-site:workersDevSubdomain: matt-c06
+secretsprovider: awskms://alias/apso-site-pulumi?region=us-east-1&awssdk=v2&profile=mavric
+encryptedkey: AQICAHhRDR51TXYmtEghyL2x7zVIQAxiFiaGb7kpXQ9RrzRE9QFiLwY0DJr4c0oO/eO3oWhGAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM9mHl71XF9j2DXsh2AgEQgDscrb4Jbdl1Cq+V8M+9Ut7SgLXaSEnA+e3irJd+HmUantbtoGBwx8KitbqDH943GE2ey7v16HglLJ/Tpg==

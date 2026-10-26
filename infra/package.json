@@ -1,0 +1,14 @@
+{
+  "name": "apso-site-infra",
+  "private": true,
+  "main": "index.ts",
+  "dependencies": {
+    "@pulumi/cloudflare": "^6.23.1",
+    "@pulumi/command": "^1.2.1",
+    "@pulumi/pulumi": "^3.272.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "typescript": "^5.9.3"
+  }
+}

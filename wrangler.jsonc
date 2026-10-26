@@ -1,0 +1,24 @@
+// Cloudflare Worker for apso.ai, built by @opennextjs/cloudflare (see open-next.config.ts).
+// Secrets and vars are not set here. infra/ (Pulumi) sets them on the deployed Worker; locally,
+// `scripts/with-secrets.sh npm run cf:preview` passes them in through CLOUDFLARE_INCLUDE_PROCESS_ENV
+// (wrangler dev directly, because `opennextjs-cloudflare preview` turns that env loading off).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "apso-site",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    // Self-reference, must match "name". See https://opennext.js.org/cloudflare/caching
+    { "binding": "WORKER_SELF_REFERENCE", "service": "apso-site" }
+  ],
+  "images": { "binding": "IMAGES" },
+  // Keep in step with the cloudflare.Worker resource in infra/index.ts.
+  "workers_dev": true,
+  "preview_urls": true,
+  "observability": { "enabled": true }
+}
