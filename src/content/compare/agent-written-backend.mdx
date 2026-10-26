@@ -1,0 +1,86 @@
+---
+title: "Apso vs letting your agent write the backend"
+description: "Claude Code, Codex and Cursor can write a backend from scratch. This guide covers what changes by the tenth feature, where Apso fits alongside the agent you already use, and when the agent alone is the better choice."
+competitor: "Agent-written code"
+date: "2026-10-23"
+order: 1
+---
+
+The most common alternative to Apso is not another platform. It is asking your coding agent to write the backend itself: the controllers, the queries, the auth checks and the migrations. For the first version this works well, and it costs almost nothing.
+
+The trouble starts later. Every change is generated fresh from a prompt and whatever the model reads in the repository that day. Nothing holds the structure of the last change. The second feature uses a slightly different pattern from the first, the fifth forgets a tenant check the third had, and the review queue fills with large diffs that each need checking line by line.
+
+Apso does not replace your agent. It gives the agent a different job.
+
+<ShortAnswer>
+  <Choice title="Let the agent write it by hand">For prototypes, internal tools with one tenant, and logic that is specific to your product.</Choice>
+  <Choice title="Use Apso with your agent" highlight>When the app has users, an agent makes changes every week, and the same rules (tenant isolation, auth, validation, migrations) have to hold on every entity, including the ones added next month.</Choice>
+</ShortAnswer>
+
+## What the research says about the second feature
+
+Three studies point the same way. None of them is about Apso.
+
+- **Code gets copied instead of reworked.** GitClear analysed 211 million changed lines from 2020 to 2024. Lines associated with refactoring fell "from 25% of changed lines in 2021, to less than 10% in 2024," while copy-pasted lines rose from 8.3% to 12.3%. ([GitClear](https://www.gitclear.com/ai_assistant_code_quality_2025_research))
+- **Security flaws are common in generated code.** Veracode tested over 100 models on 80 coding tasks and reported on July 30, 2025 that AI-generated code "introduces security vulnerabilities in 45 percent of cases." ([Veracode](https://www.veracode.com/press-release/ai-generated-code-poses-major-security-risks-in-nearly-half-of-all-development-tasks-veracode-research-reveals/))
+- **It can feel faster than it is.** In METR's July 2025 study, experienced open-source developers took 19% longer on tasks with AI tools, and afterward still believed AI had sped them up by 20%. METR has since published a 2026 update and notes the original results are out of date, so read both. ([METR](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/))
+
+The pattern behind all three is structural. When a model writes each change from scratch, the structure of the backend depends on what the model happened to do that time, and the person reviewing it has to reconstruct that.
+
+## The agent decides what. The generator decides how.
+
+Apso splits the work. Your agent stays in charge of what the product needs: it reads the project, proposes the data model and writes it into `.apsorc`, the schema file in your repository. Apso's generator then writes the backend the same way every time: entities, REST endpoints, validation, auth integration and tenant guards.
+
+Your agent works with Apso through its MCP server and Apso's agent skills. They give the agent the current schema, rules for schema design, tenancy, auth and migrations, and tools to validate and generate. None of the MCP tools write to a database. The agent changes the plan, and the plan reaches production through your pull request.
+
+## One change, both ways: add team invitations
+
+**Agent alone.** You ask for team invitations. The agent writes a migration, an entity, a controller, a service, DTOs and maybe a guard, a few hundred lines across several files. Whether the new endpoints check workspace membership depends on whether the model noticed how the existing ones do it. The reviewer has to read all of it to find out.
+
+**Agent with Apso.** You ask for the same thing. The agent adds this to the schema:
+
+```json
+{
+  "name": "Invitation",
+  "scopeBy": "workspaceId",
+  "created_at": true,
+  "fields": [
+    { "name": "email", "type": "text", "is_email": true },
+    { "name": "role", "type": "enum", "values": ["Admin", "Member"] }
+  ]
+}
+```
+
+and runs `apso generate`. The generated guard filters lists to the caller's workspace, sets `workspaceId` on create, and checks ownership on reads, updates and deletes by id, the same as for every other scoped entity. The agent then writes the part that is really new, sending the invitation email, in `src/extensions/`, which generation never overwrites. The reviewer reads ten lines of schema and the extension, not the whole stack.
+
+## What Apso does not do
+
+Being exact here matters more than sounding strong.
+
+- **Agents can still write bugs.** Apso keeps the generated structure consistent. It does not check the business logic your agent writes in `extensions/`.
+- **The guard covers the generated API.** It is application-layer enforcement on the generated endpoints. Extension code that queries the database directly is not filtered by it.
+- **Scoping is TypeScript-first.** Generated tenant guards ship in the TypeScript generator today. The Python and Go generators produce the service without them.
+- **It is REST on Postgres.** If you need GraphQL, realtime subscriptions or a document database, Apso does not generate them.
+
+## Side by side
+
+| | Agent with Apso | Agent alone |
+| --- | --- | --- |
+| Who writes the backend structure | Apso's generator, the same way every time | The model, fresh on every change |
+| What the agent writes | The schema change and the product-specific logic | Everything |
+| What the reviewer reads | A short schema diff plus extension code | Every generated file |
+| Tenant checks on a new entity | Generated when the entity declares `scopeBy` (TypeScript today) | Present if the model remembered them |
+| Custom logic | `extensions/`, never overwritten by generation | Anywhere |
+| Who owns the code | You, as standard NestJS, FastAPI or Gin code | You |
+
+## When the agent alone is the better choice
+
+- **A prototype you will throw away.** Structure matters less when there is no second feature.
+- **A single-tenant internal tool.** With no tenant boundary to hold, there is less to keep consistent.
+- **Logic that is unique to your product.** That is the agent's job either way. With Apso it lives in `extensions/`.
+
+## Bottom line
+
+Your agent is good at deciding what the backend should do. It is less reliable at doing it the same way every time. Apso keeps the agent on the first job and gives the second to a generator, so the tenth change follows the same structure as the first and the review stays small.
+
+To see it on your own backlog, [book a 20-minute demo](/contact) and bring the next feature you were going to ask your agent for.

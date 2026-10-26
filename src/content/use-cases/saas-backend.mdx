@@ -1,10 +1,9 @@
 ---
 title: "Build a Multi-Tenant SaaS Backend"
 description: "Use your coding agent and Apso to define a SaaS data model, enforce tenant boundaries, generate the service, and keep the resulting code."
+breadcrumb: "Multi-tenant SaaS"
 date: "2026-06-01"
 ---
-
-Building a SaaS backend means solving the same structural problems every time: multi-tenancy, authentication, role-based access, APIs, database migrations, and deployment. Connect Apso to Claude or Codex, describe the product and its access rules, then review the schema your agent creates before Apso generates the service.
 
 ## The Multi-Tenancy Problem
 
@@ -12,49 +11,48 @@ Every SaaS app needs tenant isolation. Users in one workspace should never see d
 
 Apso handles this at the application layer. Add `scopeBy: "workspaceId"` to an entity in your `.apsorc` schema and the generated code automatically filters all queries by the authenticated user's workspace.
 
+<Code title="Entity in .apsorc">
+
 ```json
-{
-  "name": "Project",
+{ "name": "Project",
   "scopeBy": "workspaceId",
   "fields": [
+    { "name": "workspaceId", "type": "uuid" },
     { "name": "name", "type": "text", "length": 255 },
     { "name": "status", "type": "text", "length": 50 }
-  ]
-}
+  ] }
 ```
 
-The generated guard:
-- Filters all list queries by `workspaceId`
-- Injects `workspaceId` on create operations
-- Verifies ownership on single-resource access (GET/PUT/DELETE by ID)
+</Code>
 
 ## Authentication That Fits Your Stack
 
-SaaS products often start with one auth provider and migrate to another as requirements change. Apso supports BetterAuth, Auth0, Clerk, Cognito, and API keys through the BYOA (Bring Your Own Auth) pattern.
+Authentication is opt-in. Add an auth block to your schema and Apso generates session auth, with BetterAuth or with sessions stored in your own database. Without an auth block, the service has no generated auth, and you can put your own in front of it.
 
-The generated auth guard produces a normalized `AuthContext` interface. Your business logic never touches provider-specific code. When you need to switch providers, change one line in your schema and regenerate.
+<Code title=".apsorc">
+
+```json
+"auth": { "provider": "better-auth" }
+```
+
+</Code>
 
 ## The Extensions Pattern
 
 SaaS backends always need custom business logic beyond CRUD. Apso separates generated code from your customizations:
 
-- `src/autogen/` contains generated entities, controllers, and services (regenerated on schema changes)
-- `src/extensions/` contains your custom business logic (never overwritten)
+<Dir path="src/autogen/">Generated entities, controllers, and services (regenerated on schema changes)</Dir>
 
-Add custom endpoints, validation rules, webhook handlers, or third-party integrations in extensions. Regenerate your schema as often as you need without losing your work.
+<Dir path="src/extensions/">Your custom business logic (never overwritten)</Dir>
 
 ## Deploy to Production
 
-Apso deploys your SaaS backend to AWS using Lambda for compute, RDS for the database, and API Gateway for routing. The infrastructure is provisioned via Step Functions and monitored through the Apso dashboard.
+Apso deploys your SaaS backend on managed infrastructure with a Postgres database, and you monitor it from the Apso dashboard.
 
-Each service runs independently with its own scaling, domain, and database. Scale your API service separately from your billing service or notification service.
+Each service runs independently with its own scaling and database. Scale your API service separately from your billing service or notification service.
 
 ## Build It With Your Agent
 
 1. Connect the Apso MCP server and skills to Claude or Codex.
 2. Describe the users, workspaces, roles, resources, and tenant boundaries in your product.
 3. Ask your agent to start from the Multi-Tenant Workspaces model and adapt it to your requirements.
-4. Review the resulting `.apsorc` schema, especially relationships, `scopeBy` rules, and authentication context.
-5. Let the agent generate the service through Apso, then run the normal framework tests before adding product-specific logic.
-
-Use the [Apso quickstart](https://docs.apso.dev/get-started/quickstart) for connection and generation steps.

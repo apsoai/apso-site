@@ -19,6 +19,8 @@ const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 // container, otherwise events double-count.
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
+// lazyOnload keeps tag scripts off the critical path (Lighthouse charged ~300 KB of GTM to
+// mobile LCP). Visitors who leave before window load are not counted.
 export function TrackingScripts() {
   const pathname = usePathname();
   const hasTrackedInitialPath = useRef(false);
@@ -54,7 +56,7 @@ export function TrackingScripts() {
     <>
       {gtmId ? (
         <>
-          <Script id="google-tag-manager" strategy="afterInteractive">
+          <Script id="google-tag-manager" strategy="lazyOnload">
             {`
               (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
               new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -79,9 +81,9 @@ export function TrackingScripts() {
         <>
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-            strategy="afterInteractive"
+            strategy="lazyOnload"
           />
-          <Script id="google-analytics" strategy="afterInteractive">
+          <Script id="google-analytics" strategy="lazyOnload">
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
@@ -95,7 +97,7 @@ export function TrackingScripts() {
 
       {metaPixelId ? (
         <>
-          <Script id="meta-pixel" strategy="afterInteractive">
+          <Script id="meta-pixel" strategy="lazyOnload">
             {`
               !function(f,b,e,v,n,t,s)
               {if(f.fbq)return;n=f.fbq=function(){n.callMethod?

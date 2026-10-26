@@ -16,16 +16,16 @@ interface ButtonProps {
 }
 
 const baseStyles =
-  "inline-flex items-center justify-center font-display font-600 transition-colors duration-200 cursor-pointer";
+  "inline-flex items-center justify-center font-body font-semibold transition-colors duration-200 cursor-pointer";
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: "bg-brand text-white hover:bg-brand-hover",
-  outline: "bg-transparent text-fg-2 border border-line-1 hover:border-fg-4",
+  outline: "bg-bg-0 text-fg-1 border border-[#D1D5DB] hover:border-fg-5",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  default: "px-6 py-3 text-[15px] rounded-md",
-  lg: "px-8 py-4 text-[16px] rounded-md",
+  default: "px-6 py-3 text-[15px] rounded-[10px]",
+  lg: "px-6 py-[15px] text-[16px] rounded-[10px]",
 };
 
 export function Button({

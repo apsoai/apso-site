@@ -3,6 +3,7 @@ title: "Introducing Apso: Agent-Driven Backend Generation"
 description: "AI agents decide what to build. Apso decides how. Deterministic TypeScript, Golang, and Python backend generation from a schema. You own every line."
 date: "2026-06-01"
 author: "Apso Team"
+tags: ["Announcement"]
 ---
 
 If you have built more than one backend, you know the drill. You create a database schema, scaffold a REST API, add authentication, layer in multi-tenancy, wire up permissions, and deploy to the cloud. The pattern is so repetitive that you could almost automate it.
@@ -17,7 +18,7 @@ The issue is not the agent. The issue is where the guardrails live. When securit
 
 ## The Determinism Boundary
 
-Apso puts the guardrails in the generator, not the model. You define your data model in a single `.apsorc` configuration file. Apso then generates a complete backend with CRUD endpoints, authentication, multi-tenancy, database migrations, and deployment infrastructure.
+Apso puts the guardrails in the generator, not the model. You define your data model in a single `.apsorc` configuration file. Apso then generates a complete backend with CRUD endpoints, database migrations, and deployment infrastructure, plus authentication and multi-tenancy when your schema declares them.
 
 The same schema and CLI version produce the same output on any model.
 
@@ -30,26 +31,16 @@ We call this the **determinism boundary**: the line between nondeterministic age
 Define your entities, fields, relationships, and auth rules in `.apsorc`:
 
 ```json
-{
+{ "version": 2, "rootFolder": "src",
   "entities": [
-    {
-      "name": "Workspace",
-      "fields": [
-        { "name": "name", "type": "text", "length": 255 }
-      ]
-    },
-    {
-      "name": "User",
-      "fields": [
-        { "name": "email", "type": "text", "length": 255, "is_email": true },
-        { "name": "name", "type": "text", "length": 255 }
-      ],
-      "relationships": [
-        { "name": "workspace", "type": "ManyToOne", "entity": "Workspace" }
-      ]
-    }
-  ]
-}
+    { "name": "Workspace",
+      "fields": [{ "name": "name", "type": "text" }] },
+    { "name": "User",
+      "fields": [{ "name": "email", "type": "text", "is_email": true }] }
+  ],
+  "relationships": [
+    { "from": "Workspace", "to": "User", "type": "OneToMany" }
+  ] }
 ```
 
 Approve the model and Apso generates a complete backend: controller routes, service layer, repository layer, database migrations, error handling, input validation, and deployment config. Apso supports TypeScript, Golang, and Python.
@@ -60,7 +51,7 @@ Approve the model and Apso generates a complete backend: controller routes, serv
 
 **You own the code.** The output is real backend code in your repository. It has no Apso imports, vendor SDK, or proprietary runtime. The generator and templates are open source, and the generated TypeScript, Golang, and Python stacks are open source. Stop using Apso and the code keeps working.
 
-**Bring Your Own Auth.** BetterAuth, Auth0, Clerk, Cognito, or API keys. Switch providers by changing one line in your schema and regenerating.
+**Auth when you declare it.** Add an auth block to your schema and Apso generates session auth with BetterAuth, or with sessions stored in your own database.
 
 **Safe regeneration.** Generated code lives in `src/autogen/`. Your custom business logic lives in `src/extensions/`. Regenerate as many times as you want without losing your work.
 

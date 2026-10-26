@@ -1,0 +1,88 @@
+---
+title: "Apso vs Convex"
+description: "Convex is a reactive backend where you write TypeScript functions against a hosted database. Apso generates a standard backend service from a schema. This guide covers where each fits, and what adding a feature looks like on both."
+competitor: "Convex"
+date: "2026-10-23"
+order: 7
+---
+
+Convex is one of the best-built backends for AI-written apps. You write queries, mutations and actions as TypeScript functions in a `convex/` folder, they run as transactions against Convex's reactive document database, and every client sees updates live. Its transactional model removes a whole class of concurrency bugs that agents tend to write against a plain database.
+
+Apso solves a different problem. Your agent describes the data model in a schema file, and Apso generates a standard backend service, in TypeScript, Python or Go, that follows the same structure on every change and runs without any Apso runtime.
+
+Both put backend code in your repository. The difference is what writes it, and what it needs in order to run.
+
+<ShortAnswer>
+  <Choice title="Choose Convex when">Live, reactive data is central to the product, your stack is TypeScript end to end, and you are happy to run on the Convex runtime, in Convex Cloud or self-hosted.</Choice>
+  <Choice title="Choose Apso when" highlight>You want a conventional REST service on Postgres, in the language your team already uses, with access rules generated from the schema instead of written into each function.</Choice>
+</ShortAnswer>
+
+## Read the guardrails. They're in your repo.
+
+Convex has no built-in row-level security. Each query and mutation checks the caller's identity and decides what they may see, in code you or your agent write, function by function. That is flexible and explicit. It also means a new function written without that check runs without it, and an agent writing its fortieth function has to remember the same pattern it used in the first.
+
+Apso moves that decision out of each function and into the schema. An entity declares `scopeBy`, and the generator writes the same guard for every endpoint that entity gets. The guardrail is still code in your repository, which you can read and test. The agent does not write it each time.
+
+## One change, both ways: add team invitations
+
+**On Convex**, the agent adds an `invitations` table to `schema.ts`, then writes functions for it:
+
+1. A query to list a workspace's invitations, checking the caller is a member.
+2. Mutations to create, accept and revoke them, each with the same membership check.
+3. An action to send the email.
+
+Each function carries its own authorization check, so the review has to confirm all of them.
+
+**On Apso**, the agent adds one entity to `.apsorc`, the schema file in your repository:
+
+```json
+{
+  "name": "Invitation",
+  "scopeBy": "workspaceId",
+  "created_at": true,
+  "fields": [
+    { "name": "email", "type": "text", "is_email": true },
+    { "name": "role", "type": "enum", "values": ["Admin", "Member"] }
+  ]
+}
+```
+
+`apso generate` writes the REST endpoints with a guard that filters lists to the caller's workspace, sets `workspaceId` on create, and checks ownership on reads, updates and deletes by id. The reviewer checks ten lines of schema once, and every endpoint for that entity inherits the rule. The email logic goes in `src/extensions/`, which generation never overwrites.
+
+**The limits.** The guard runs on the generated API endpoints, not inside the database, so code in `extensions/` that queries the database directly is not filtered by it. Generated scoping ships in the TypeScript generator today, not yet in Python or Go. Apso does not generate live, reactive queries.
+
+## Side by side
+
+| | Apso | Convex |
+| --- | --- | --- |
+| What it is | A generator that writes your backend service | A reactive database with TypeScript functions |
+| Database | PostgreSQL | Convex's document database |
+| API | Generated REST endpoints | Queries, mutations and actions over WebSockets, plus optional HTTP actions |
+| Where access rules live | `scopeBy` in the schema, generated into guard code (TypeScript today) | Checks written inside each function |
+| Languages | TypeScript, Python or Go | TypeScript |
+| Auth | BetterAuth, Auth0, Clerk, Cognito, API keys or custom sessions | Clerk, WorkOS AuthKit, Auth0, custom OIDC, or Convex Auth (beta) |
+| Runtime the code needs | None from Apso; standard NestJS, FastAPI or Gin | The Convex runtime, in Convex Cloud or self-hosted |
+| License | Generator, templates and generated code are Apache-2.0 | FSL, converting to Apache-2.0 after two years |
+
+## Where Convex is the better choice
+
+- **Live data is the product.** Every query is reactive, and clients update without polling or subscription code. Apso does not generate that.
+- **Transactions by default.** Mutations run as transactions, which protects against race conditions an agent might otherwise write.
+- **TypeScript everywhere.** Schema, functions and client share types end to end.
+- **A fast realtime prototype.** For a collaborative or live app, Convex gets you there quickly.
+
+<KeepBand>
+
+## What you keep if you leave
+
+**Leaving Convex**, you can export your data as a ZIP of JSONL documents per table. Your functions are TypeScript in your repository, but they are written against Convex's APIs and runtime, so moving to another backend means rewriting them. You can also stay on Convex and self-host it.
+
+**Leaving Apso**, the backend is already standard NestJS, FastAPI or Gin code in your repository with no Apso runtime, and it runs with Docker or the framework's tooling. You give up Apso's infrastructure automation: provisioning and hosting with managed Postgres, environment management, dashboard logs and data views, and `apso deploy`. Exporting gives you the application code. The infrastructure automation is the part you pay for.
+
+</KeepBand>
+
+## Bottom line
+
+Convex is excellent for live, reactive TypeScript apps. Apso is for teams that want a conventional service on Postgres in their own language, where access rules come from the schema instead of being rewritten in every function, so the tenth change follows the same pattern as the first.
+
+If that is what you need, [book a 20-minute demo](/contact) and bring the feature you are building next.

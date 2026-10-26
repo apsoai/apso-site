@@ -1,65 +1,85 @@
 ---
 title: "Apso vs Xano"
-description: "A practical comparison of Apso and Xano for teams choosing between a no-code backend platform and generated backend code."
+description: "Xano builds backends visually, and its AI agent can build them for you. Apso turns your agent's intent into backend code you own. This guide covers where each fits, and what adding a feature looks like on both."
 competitor: "Xano"
-date: "2026-06-02"
+date: "2026-10-23"
+order: 6
 ---
 
-Xano is a no-code backend platform for building databases, APIs, auth, and backend logic with visual tools. It is built for teams that want to create production backends without managing infrastructure or writing much backend code.
+Xano is a Postgres-based backend platform with a visual API builder, its own XanoScript language, and an AI agent that can build tables and endpoints for you. It lets people who do not write backend code ship real APIs, and it is good at it.
 
-Apso is built for teams that want generated backend code. Agents or developers define a schema, and Apso uses an open-source generator to create a TypeScript, Golang, or Python service that can be deployed to AWS.
+Apso is for teams that want the result to be code. Your agent describes the data model in a schema file, and Apso writes the backend as TypeScript, Python or Go in your repository, where it goes through the same review as the rest of your product.
 
-## Quick Verdict
+<ShortAnswer>
+  <Choice title="Choose Xano when">The people building the backend are not backend developers, a visual builder is the right working surface for your team, and you are happy for the platform to be the source of truth.</Choice>
+  <Choice title="Choose Apso when" highlight>Developers own the product, an agent is making most of the changes, and you want every change reviewed as code in a pull request before it reaches users.</Choice>
+</ShortAnswer>
 
-Choose Xano when visual backend building, no-code workflows, and non-developer collaboration matter most.
+## Where the second feature goes wrong on Xano
 
-Choose Apso when your team wants AI-assisted backend generation but still wants the output to be code.
+Xano's security model is set per endpoint, and its docs are direct about the default: auto-generated CRUD endpoints "ship with **no authentication required** and **External Access enabled** by default." The docs warn about "ghost endpoints," the generated endpoints nobody remembered to lock down.
 
-## Side-by-Side
+So every new table brings new public endpoints until someone secures each one. In a multi-tenant app, each of those endpoints also needs its own check that the caller belongs to the right tenant. Xano's Tenant Center helps with tenant management, but the per-endpoint rule is still yours to remember on every feature.
 
-| Decision area | Apso | Xano |
+The Xano Agent speeds this up, and it has "full access to your workspace." It shows a diff and pushes to draft, but Xano notes that tables and API groups "don't support draft states," so those changes publish directly.
+
+## One change, both ways: add team invitations
+
+**On Xano**, the agent or a builder creates an `invitations` table, which comes with CRUD endpoints. Then someone has to:
+
+1. Turn on authentication for each generated endpoint, or delete the ones you do not need.
+2. Add a check in each endpoint's function stack that the caller belongs to the invitation's workspace.
+3. Build the email-sending and accept flow in a function stack or a Lambda function.
+
+**On Apso**, the agent adds one entity to `.apsorc`, the schema file in your repository:
+
+```json
+{
+  "name": "Invitation",
+  "scopeBy": "workspaceId",
+  "created_at": true,
+  "fields": [
+    { "name": "email", "type": "text", "is_email": true },
+    { "name": "role", "type": "enum", "values": ["Admin", "Member"] }
+  ]
+}
+```
+
+`apso generate` writes the REST endpoints with a guard that filters lists to the caller's workspace, sets `workspaceId` on create, and checks ownership on reads, updates and deletes by id. The new endpoints are protected the moment they exist, by the same generated code as every other scoped entity. The email logic goes in `src/extensions/`, which generation never overwrites.
+
+**The limits.** The guard runs on the generated API endpoints, not inside the database, so code in `extensions/` that queries the database directly is not filtered by it. Generated scoping ships in the TypeScript generator today, not yet in Python or Go.
+
+## Side by side
+
+| | Apso | Xano |
 | --- | --- | --- |
-| Primary model | Generated backend code | No-code backend platform |
-| Builder experience | Schema, CLI, MCP, and generated code | Visual API and logic builder |
-| Code ownership | Generated service code in your repo | Backend logic lives in the Xano platform |
-| Open-source posture | Open-source generator, Apache-2.0 templates, and open-source generated stacks | Hosted no-code platform model |
-| Business logic | Application-layer TypeScript, Golang, or Python | Visual workflows and platform logic |
-| Deployment | Managed AWS or your cloud | Xano-managed infrastructure and enterprise deployment options |
-| Best fit | Developer-led owned backend services | No-code and cross-functional backend building |
+| What it is | A generator that writes your backend service | A hosted visual backend platform on Postgres |
+| Working surface | Schema file, CLI, MCP server and code | Visual builder, XanoScript and Xano Agent |
+| Source of truth | Code in your repository | The Xano workspace |
+| New endpoints | Guarded if the entity declares `scopeBy` (TypeScript today) | Public until authentication is turned on |
+| How changes are reviewed | Pull request before deploy | Diff in Xano; tables publish directly |
+| Business logic | TypeScript, Python or Go in `extensions/` | Function stacks, XanoScript and Lambda functions |
+| Where it runs | Apso Cloud, or anywhere you run Docker | Xano Cloud; BYOC and on-premise on Enterprise |
 
-## Where Xano Fits
+## Where Xano is the better choice
 
-- **Visual backend building.** Non-developers can inspect and edit backend logic without reading service code.
-- **No-code speed.** Teams can build APIs, database tables, auth flows, and workflows quickly.
-- **Operational tooling.** Xano provides managed infrastructure, observability, environments, and governance features.
-- **Cross-functional collaboration.** Product, operations, and engineering teams can work in the same backend surface.
-- **AI-assisted no-code.** Xano leans into AI-generated backend work that remains visible in the platform.
+- **Non-developers build the backend.** The visual builder lets product and operations people see and change logic.
+- **You want one hosted workspace.** Xano runs the infrastructure, environments and realtime for you.
+- **Multi-tenant admin tooling.** Xano's Tenant Center manages tenants from the platform.
+- **You build MCP servers.** Xano can host MCP servers built in the same workspace.
 
-## Where Apso Wins
+<KeepBand>
 
-- **Code output.** Apso produces backend code your engineering team can version, review, test, and modify.
-- **Open-source generation path.** The generator, templates, and generated TypeScript, Golang, and Python stacks are open source, so ownership is practical, not just contractual.
-- **Developer workflow fit.** The generated service lives in the same repo and review flow as the rest of your application.
-- **Language control.** Teams can generate TypeScript, Golang, or Python backends.
-- **Agent boundary.** Agents can propose schema changes, while Apso controls the deterministic output.
-- **Exit path.** The generated service can keep running without Apso.
+## What you keep if you leave
 
-## Migration and Lock-In
+**Leaving Xano**, you can export your data and an OpenAPI description of your endpoints. The logic in function stacks and XanoScript has to be rebuilt in whatever comes next. Running Xano outside Xano Cloud requires an Enterprise plan.
 
-Xano makes backend logic understandable through a visual platform, but that also means the source of truth lives inside Xano.
+**Leaving Apso**, the backend is already standard NestJS, FastAPI or Gin code in your repository with no Apso runtime, and it runs with Docker or the framework's tooling. You give up Apso's infrastructure automation: provisioning and hosting with managed Postgres, environment management, dashboard logs and data views, and `apso deploy`. Exporting gives you the application code. The infrastructure automation is the part you pay for.
 
-Apso makes the codebase the source of truth. The UI and generator help create it, but the generated backend remains portable.
+</KeepBand>
 
-## Best Fit by Team
+## Bottom line
 
-| Team | Better fit | Why |
-| --- | --- | --- |
-| No-code operations team | Xano | Visual workflows reduce engineering dependency |
-| Developer-led SaaS team | Apso | The backend code remains reviewable and extensible |
-| Enterprise workflow team | Xano | Governance and visual inspection matter |
-| Agency handing off code | Apso | The client receives a codebase |
-| AI-agent backend workflow | Apso | The schema creates a stable boundary between agent intent and generated code |
+Xano is the better fit when a visual builder is how your team works. Apso is for developer-led teams whose agent makes changes every week, where each change is a schema edit reviewed in a pull request and new endpoints are protected the moment they are generated.
 
-## Bottom Line
-
-Xano fits teams that want a visual backend. Apso is the better fit when you want AI-assisted backend creation with code ownership as the final output.
+If that sounds like your team, [book a 20-minute demo](/contact) and bring the feature you are building next.

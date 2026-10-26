@@ -6,12 +6,14 @@
     "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:contact": "node --experimental-strip-types scripts/test-contact-delivery.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
+    "lottie-web": "^5.12.2",
     "lucide-react": "^0.468.0",
-    "next": "16.2.7",
+    "next": "16.4.3",
     "next-mdx-remote": "^6.0.0",
     "posthog-js": "^1.382.0",
     "react": "19.2.4",
@@ -28,7 +30,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.7",
+    "eslint-config-next": "16.4.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

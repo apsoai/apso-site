@@ -1,4 +1,4 @@
-import { Barlow, Public_Sans, Roboto_Mono } from "next/font/google";
+import { Barlow, Poppins, Roboto_Mono } from "next/font/google";
 
 export const barlow = Barlow({
   subsets: ["latin"],
@@ -7,10 +7,10 @@ export const barlow = Barlow({
   display: "swap",
 });
 
-export const publicSans = Public_Sans({
+export const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
-  variable: "--font-public-sans",
+  variable: "--font-poppins",
   display: "swap",
 });
 

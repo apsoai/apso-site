@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import { Bot, CircleDollarSign, Code2, HelpCircle, KeyRound, ServerCog } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { Section } from "@/components/ui/section";
-import { Accordion } from "@/components/ui/accordion";
-import { PageHero } from "@/components/marketing/page-hero";
-import { PageCta } from "@/components/marketing/page-cta";
-import { HeroLedger } from "@/components/marketing/hero-ledger";
+import { ReadHeader } from "@/components/content/read-header";
+import { OnThisPage } from "@/components/content/on-this-page";
+import { ClosingBand } from "@/components/content/closing-band";
+import { DOCS_URL } from "@/lib/constants";
+import { JsonLd } from "@/components/seo/json-ld";
+import { faqPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/faq" },
   title: "Frequently Asked Questions",
   description: "Answers about Apso generation, agent workflows, backend ownership, deployment, languages, authentication, and pricing.",
 };
@@ -46,7 +48,7 @@ const technicalQuestions = [
   },
   {
     question: "How does authentication work?",
-    answer: "Apso supports a bring-your-own-auth approach. The generated service receives a normalized authentication context while your team chooses the identity provider and session model that fit the product.",
+    answer: 'Authentication is opt-in. Add an auth block to your schema, for example "auth": { "provider": "better-auth" }, and Apso generates session auth with BetterAuth, or with sessions stored in your own database. Without an auth block the service has no generated auth, and you can put your own in front of it.',
   },
   {
     question: "Can we customize generated code?",
@@ -61,7 +63,7 @@ const technicalQuestions = [
 const pricingQuestions = [
   {
     question: "How much does Apso cost?",
-    answer: "Pricing has two parts. The workspace plan is Free at $0, Team at $99 per month flat, or Business and Enterprise, which are priced with sales. Each deployed service has its own tier, bought separately on any plan: one Free service per workspace, then Small at $25, Medium at $49, or Large at $99 per service each month.",
+    answer: "Pricing has two parts. The workspace plan is Free at $0, Team at $99 per month flat, or Business, which is priced with sales. Each deployed service has its own tier, bought separately on any plan: one Free service per workspace, then Small at $25. Medium and Large are coming soon.",
   },
   {
     question: "Does Apso charge per seat?",
@@ -77,84 +79,64 @@ const pricingQuestions = [
   },
 ];
 
-const categories = [
-  { id: "product", label: "Product and ownership", count: generalQuestions.length, icon: HelpCircle },
-  { id: "technical", label: "Technical workflow", count: technicalQuestions.length, icon: Code2 },
-  { id: "pricing", label: "Pricing and deployment", count: pricingQuestions.length, icon: CircleDollarSign },
+const groups = [
+  { id: "product", label: "Product and ownership", items: generalQuestions },
+  { id: "technical", label: "Agents, generation, and services", items: technicalQuestions },
+  { id: "pricing", label: "Pricing and deployment", items: pricingQuestions },
 ];
+
+const topics = groups.map(({ id, label, items }) => ({ id, label, count: items.length }));
 
 export default function FaqPage() {
   return (
     <>
-      <PageHero
-        eyebrow="Help center"
-        title="Clear answers about the backend foundation"
-        description="Understand what Apso generates, how it works with your coding agent, where the service runs, and what your team owns."
-        actions={
-          <>
-            <a href="#product" className="inline-flex min-h-12 items-center justify-center rounded-sm bg-brand px-6 font-display text-[14px] font-semibold text-white hover:bg-brand-hover">Browse answers</a>
-            <a href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-sm border border-white/20 px-6 font-display text-[14px] font-semibold text-white hover:border-white/45">Ask a question</a>
-          </>
-        }
-        meta={[`${generalQuestions.length + technicalQuestions.length + pricingQuestions.length} answers`, "Product and technical", "Direct support available"]}
-        visual={
-          <HeroLedger
-            label="Popular topics"
-            rows={[
-              { label: "Agent workflow", value: "How Claude, Codex, MCP, and Apso work together.", icon: Bot },
-              { label: "Code ownership", value: "What is generated and how the service stays portable.", icon: KeyRound },
-              { label: "Deployment model", value: "Managed infrastructure or your own cloud account.", icon: ServerCog },
-            ]}
-            footer="contact the team when the answer depends on your system"
-          />
-        }
-      />
+      <JsonLd data={faqPageSchema(groups.flatMap((g) => g.items))} />
+      <ReadHeader title="Clear answers about the backend foundation">
+        Understand what Apso generates, how it works with your coding agent, where the service runs, and what your team owns.
+      </ReadHeader>
 
-      <Section>
+      <section className="bg-bg-0 pb-14 pt-2 lg:pb-24 lg:pt-12">
         <Container>
-          <div className="grid gap-10 lg:grid-cols-[250px_minmax(0,820px)] lg:justify-center lg:gap-16">
-            <aside>
-              <div className="lg:sticky lg:top-28">
-                <p className="font-mono text-[10px] uppercase text-brand">Browse by topic</p>
-                <nav className="mt-4 border-t border-line-1" aria-label="FAQ categories">
-                  {categories.map(({ id, label, count, icon: Icon }) => (
-                    <a key={id} href={`#${id}`} className="flex items-center gap-3 border-b border-line-1 py-4 text-[13px] text-fg-3 hover:text-brand">
-                      <Icon aria-hidden="true" className="h-4 w-4" />
-                      <span className="flex-1">{label}</span>
-                      <span className="font-mono text-[10px] text-fg-5">{count}</span>
-                    </a>
-                  ))}
-                </nav>
-                <p className="mt-5 text-[12px] leading-5 text-fg-5">The docs contain setup steps, schema reference material, and end-to-end tutorials.</p>
-              </div>
+          <nav aria-label="FAQ topics" className="flex flex-wrap gap-2 pb-2 pt-4 lg:hidden">
+            {topics.map(({ id, label }) => (
+              <a key={id} href={`#${id}`} className="rounded-full bg-bg-2 px-3.5 py-3 text-[13px] font-medium text-fg-3 hover:bg-brand-soft hover:text-brand">
+                {label}
+              </a>
+            ))}
+          </nav>
+          <div className="grid gap-12 lg:grid-cols-[240px_minmax(0,760px)] lg:gap-20">
+            <aside className="hidden lg:block">
+              <OnThisPage label="FAQ topics" items={topics} />
             </aside>
-
-            <div className="space-y-14">
-              <FaqGroup id="product" eyebrow="Product" title="Product and ownership" items={generalQuestions} />
-              <FaqGroup id="technical" eyebrow="Technical" title="Agents, generation, and services" items={technicalQuestions} />
-              <FaqGroup id="pricing" eyebrow="Commercial" title="Pricing and deployment" items={pricingQuestions} />
+            <div className="space-y-12 pt-4 lg:pt-0">
+              {groups.map(({ id, label, items }) => (
+                <section key={id} id={id} className="scroll-mt-28">
+                  <h2 className="font-display text-[22px] font-bold text-fg-1 md:text-[26px]">{label}</h2>
+                  <div className="mt-2.5">
+                    {items.map(({ question, answer }, i) => (
+                      <details key={question} open={id === "product" && i === 0} className="group border-b border-line-1 py-5">
+                        <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-[16px] font-medium text-fg-1 md:text-[17px] [&::-webkit-details-marker]:hidden">
+                          {question}
+                          <ChevronDown aria-hidden="true" className="h-5 w-5 shrink-0 text-fg-4 transition-transform group-open:rotate-180 motion-reduce:transition-none" />
+                        </summary>
+                        <p className="mt-3 max-w-[720px] pr-10 text-[16px] leading-[1.7] text-fg-3">{answer}</p>
+                      </details>
+                    ))}
+                  </div>
+                </section>
+              ))}
             </div>
           </div>
         </Container>
-      </Section>
+      </section>
 
-      <PageCta
-        eyebrow="Need a specific answer"
+      <ClosingBand
         title="Bring us the backend decision you are working through"
         description="Share your product, deployment boundary, or current stack and we will help you evaluate whether Apso fits."
-        primaryLabel="Contact the team"
-        primaryHref="/contact"
+        primary={{ label: "Contact the team", href: "/contact" }}
+        secondary={{ label: "Read the docs", href: DOCS_URL }}
+        secondaryStyle="outline"
       />
     </>
-  );
-}
-
-function FaqGroup({ id, eyebrow, title, items }: { id: string; eyebrow: string; title: string; items: typeof generalQuestions }) {
-  return (
-    <section id={id} className="scroll-mt-28">
-      <p className="font-mono text-[10px] uppercase text-brand">{eyebrow}</p>
-      <h2 className="mb-5 mt-2 font-display text-[27px] font-bold text-fg-1">{title}</h2>
-      <Accordion items={items} />
-    </section>
   );
 }

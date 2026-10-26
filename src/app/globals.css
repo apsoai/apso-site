@@ -2,12 +2,12 @@
 
 @theme inline {
   /* Brand */
-  --color-brand: #0018FF;
-  --color-brand-hover: #0014D6;
-  --color-brand-soft: #E5E8FF;
+  --color-brand: #2563EB;
+  --color-brand-hover: #1D4ED8;
+  --color-brand-soft: #EFF6FF;
 
   /* Navy */
-  --color-navy: #001A41;
+  --color-navy: #111827;
 
   /* Green */
   --color-accent: #01E67A;
@@ -18,16 +18,16 @@
   --color-amber: #FFAB00;
 
   /* Foreground */
-  --color-fg-1: #000000;
-  --color-fg-2: #212B36;
-  --color-fg-3: #454F5B;
-  --color-fg-4: #637381;
-  --color-fg-5: #919EAB;
+  --color-fg-1: #111827;
+  --color-fg-2: #1F2937;
+  --color-fg-3: #374151;
+  --color-fg-4: #4B5563;
+  --color-fg-5: #6B7280;
 
   /* Background */
   --color-bg-0: #FFFFFF;
   --color-bg-1: #F9FAFB;
-  --color-bg-2: #F4F6F8;
+  --color-bg-2: #F3F4F6;
 
   /* Lines */
   --color-line-1: #DFE3E8;
@@ -44,7 +44,7 @@
 
   /* Fonts */
   --font-display: var(--font-barlow), system-ui, sans-serif;
-  --font-body: var(--font-public-sans), system-ui, sans-serif;
+  --font-body: var(--font-poppins), system-ui, sans-serif;
   --font-mono: var(--font-roboto-mono), ui-monospace, monospace;
 }
 

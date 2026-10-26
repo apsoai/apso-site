@@ -1,78 +1,95 @@
+import { Check } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { Section } from "@/components/ui/section";
-import { BookOpenCheck, Braces, PlugZap } from "lucide-react";
+import { Dog } from "@/components/home/dog";
 
-const steps = [
+const RULES = ["schema", "tenancy", "auth", "migrations", "extensions", "deploy"];
+const ENTITIES = ["Workspace", "Project", "Task"];
+const TICKS = ["propose model", "generate service", "verify result"];
+
+const STEPS = [
   {
-    number: "01",
-    label: "Teach",
+    mood: "curious" as const,
     title: "Give your agent backend expertise",
-    description: "Apso gives Claude or Codex repeatable rules for schema design, tenancy, auth, migrations, extensions, and deployment. The agent can apply the right backend pattern without waiting for you to name it.",
-    example: "Expert rules + task skills",
-    icon: BookOpenCheck,
+    body: "Apso gives Claude or Codex repeatable rules for schema design, tenancy, auth, migrations, extensions, and deployment. The agent can apply the right backend pattern without waiting for you to name it.",
+    scene: (
+      <div className="scene sc-rules" aria-hidden="true">
+        {RULES.map((r, i) => (
+          <span key={r} className="rule" style={{ "--i": i } as React.CSSProperties}>{r}</span>
+        ))}
+      </div>
+    ),
   },
   {
-    number: "02",
-    label: "Ground",
+    mood: "active" as const,
     title: "Connect it to the real project",
-    description: "The Apso MCP server gives the agent access to the current schema and generation tools. It can inspect, design, validate, and build from what your project actually contains.",
-    example: "inspect → design → validate",
-    icon: PlugZap,
+    body: "The Apso MCP server gives the agent access to the current schema and generation tools. It can inspect, design, validate, and build from what your project actually contains.",
+    scene: (
+      <div className="scene sc-mcp" aria-hidden="true">
+        <span className="cable"><b>MCP</b></span>
+        <div className="mini">
+          <div className="mini-h"><span className="dot" />project schema</div>
+          {ENTITIES.map((e, i) => (
+            <span key={e} className="ent" style={{ "--i": i } as React.CSSProperties}>{e}</span>
+          ))}
+        </div>
+      </div>
+    ),
   },
   {
-    number: "03",
-    label: "Build",
+    mood: "happy" as const,
     title: "Ask for the product outcome",
-    description: "Describe the workflow in plain language. Your agent chooses the Apso process, proposes the model, generates the service, and verifies the result before you review the code.",
-    example: 'You: "Add team invitations."',
-    icon: Braces,
+    body: "Describe the workflow in plain language. Your agent chooses the Apso process, proposes the model, generates the service, and verifies the result before you review the code.",
+    scene: (
+      <div className="scene sc-ask" aria-hidden="true">
+        <div className="ask"><span className="ask-t" data-full="Add team invitations.">Add team invitations.</span></div>
+        <ul className="ticks">
+          {TICKS.map((t) => (
+            <li key={t}><Check size={12} strokeWidth={2.4} />{t}</li>
+          ))}
+        </ul>
+      </div>
+    ),
   },
 ];
 
 export function HowItWorks() {
   return (
-    <Section id="how-it-works">
+    <section id="how-it-works" className="scroll-mt-20 bg-[#0b1220] py-14 text-white md:py-[120px]">
       <Container>
-        <div className="grid gap-6 lg:grid-cols-[1fr_420px] lg:items-end">
-          <div className="max-w-[760px]">
-            <p className="text-eyebrow mb-4 text-brand">How it works</p>
-            <h2 className="text-h2 text-fg-1">Turn your coding agent into a backend expert with Apso</h2>
-            <p className="mt-4 text-fg-3 leading-7">
-              Apso gives Claude, Codex, and other coding agents repeatable backend rules, specialized workflows, and project-aware tools. You describe the outcome. The agent designs, generates, and verifies the foundation.
-            </p>
-          </div>
-          <div className="border-l-2 border-accent pl-5">
-            <p className="font-mono text-[10px] uppercase text-brand">Backend expertise in context</p>
-            <p className="mt-2 text-[13px] leading-6 text-fg-4">
-              Schema design, access boundaries, extensions, migrations, generation, and verification become part of the agent&apos;s working context.
-            </p>
-          </div>
+        <h2 className="max-w-[960px] font-display text-[34px] font-extrabold leading-[1.02] tracking-[-0.02em] text-white md:text-[60px]">
+          Turn your coding agent into a backend expert with Apso
+        </h2>
+        <p className="mt-8 max-w-[760px] text-[17px] leading-[1.65] text-[#9ca3af] md:text-[19px]">
+          Apso gives Claude, Codex, and other coding agents repeatable backend rules, specialized workflows, and
+          project-aware tools. You describe the outcome. The agent designs, generates, and verifies the foundation.
+        </p>
+        <div className="mt-8 inline-flex max-w-full flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl bg-[#13203a] px-5 py-3.5 text-[14px]">
+          <b className="font-semibold text-[#93c5fd]">Backend expertise in context</b>
+          <span className="text-[#cbd5e1]">
+            Schema design, access boundaries, extensions, migrations, generation, and verification become part of the
+            agent&apos;s working context.
+          </span>
         </div>
 
-        <div className="mt-12 grid border-y border-line-1 lg:grid-cols-3">
-          {steps.map((step, index) => (
-            <article
-              key={step.number}
-              className={`py-8 lg:px-8 ${
-                index > 0 ? "border-t border-line-1 lg:border-l lg:border-t-0" : "lg:pl-0"
-              } ${index === steps.length - 1 ? "lg:pr-0" : ""}`}
-            >
-              <div className="flex items-center justify-between">
-                <span className="flex h-9 w-9 items-center justify-center rounded-sm border border-line-1 bg-bg-1 text-brand">
-                  <step.icon aria-hidden="true" className="h-4 w-4" />
+        <div className="mt-12 grid gap-12 md:mt-20 lg:grid-cols-3 lg:gap-10" data-hm="steps">
+          {STEPS.map((s, i) => (
+            <div key={s.title} className="step awake min-w-0" data-wake={s.mood}>
+              <div className="step-top">
+                <Dog mood={s.mood} />
+                {s.scene}
+                <span className="rail"><i /></span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="step-num grid h-[33px] w-8 shrink-0 place-items-center rounded-2xl bg-brand text-[14px] font-semibold text-white">
+                  {i + 1}
                 </span>
-                <span className="text-[11px] font-semibold uppercase text-fg-5">{step.label}</span>
+                <h3 className="pt-0.5 font-display text-[24px] font-bold leading-[1.17] text-white">{s.title}</h3>
               </div>
-              <p className="mt-6 font-mono text-[10px] text-fg-5">{step.number}</p>
-              <h3 className="mt-2 font-display text-[22px] font-bold text-fg-1">{step.title}</h3>
-              <p className="mt-3 min-h-[120px] text-[14px] leading-6 text-fg-3">{step.description}</p>
-              <div className="mt-6 overflow-x-auto rounded-sm bg-navy px-4 py-3 font-mono text-[11px] text-white/70">
-                <span className="mr-2 text-accent">✓</span>{step.example}
-              </div>
-            </article>
+              <p className="mt-[18px] text-[16px] leading-[1.63] text-[#9ca3af]">{s.body}</p>
+            </div>
           ))}
         </div>
       </Container>
-    </Section>
+    </section>
   );
 }

@@ -12,12 +12,16 @@ export interface CompareFrontmatter {
   description: string;
   competitor: string;
   date: string;
+  /** Position on the /compare index. */
+  order?: number;
   image?: string;
 }
 
 export interface UseCaseFrontmatter {
   title: string;
   description: string;
+  /** Short name for the breadcrumb, such as "Multi-tenant SaaS". */
+  breadcrumb?: string;
   date: string;
   image?: string;
 }

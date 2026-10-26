@@ -6,6 +6,7 @@ export const APP_URL = "https://app.apso.cloud";
 export const DOCS_URL = "https://docs.apso.dev";
 export const GITHUB_URL = "https://github.com/apsoai";
 export const CONTACT_EMAIL = "sales@mavric.tech";
+export const BOOKING_URL = "https://api.leadconnectorhq.com/widget/bookings/apso-business-inquiry";
 
 export const NAV_GROUPS = [
   {
@@ -15,7 +16,7 @@ export const NAV_GROUPS = [
       {
         label: "Backend generator",
         description: "Generate APIs, migrations, auth, and tests from one schema.",
-        href: "/#how-it-works",
+        href: "/#generator",
         icon: "braces",
       },
       {
@@ -27,14 +28,14 @@ export const NAV_GROUPS = [
       {
         label: "Agent workflow",
         description: "Give Claude or Codex backend rules and project-aware tools.",
-        href: `${DOCS_URL}/develop/tools/ai-assisted-development`,
+        href: "/#how-it-works",
         external: true,
         icon: "bot",
       },
       {
         label: "Deploy and own",
         description: "Run on Apso Cloud or take the generated service to your cloud.",
-        href: "/#deploy",
+        href: "/pricing",
         icon: "cloud-cog",
       },
     ],
@@ -43,7 +44,7 @@ export const NAV_GROUPS = [
       title: "Turn your coding agent into a backend expert",
       description: "Give your agent Apso's expert rules and project-aware MCP tools. Add task skills through the Claude plugin.",
       action: "See the expert workflow",
-      href: `${DOCS_URL}/develop/tools/ai-assisted-development`,
+      href: "/compare/agent-written-backend",
       external: true,
       icon: "sparkles",
     },
@@ -105,25 +106,25 @@ export const NAV_GROUPS = [
       {
         label: "Multi-tenant SaaS",
         description: "Model workspaces, members, roles, billing, and audit history.",
-        href: "/use-cases/saas-backend",
+        href: "/use-cases#multi-tenant-saas",
         icon: "building-2",
       },
       {
-        label: "Customer platforms",
+        label: "Customer operations",
         description: "Build CRM, support, and client portal backends.",
-        href: "/templates#crm",
+        href: "/use-cases#customer-operations",
         icon: "contact-round",
       },
       {
-        label: "Commerce and operations",
+        label: "Commerce systems",
         description: "Start with orders, inventory, events, or project workflows.",
-        href: "/templates#ecommerce",
+        href: "/use-cases#commerce-systems",
         icon: "shopping-cart",
       },
       {
-        label: "Internal tools",
+        label: "Agent-facing APIs",
         description: "Generate stable APIs for workflows your team controls.",
-        href: "/use-cases",
+        href: "/use-cases#agent-facing-apis",
         icon: "wrench",
       },
     ],
@@ -159,15 +160,16 @@ export const FOOTER_LINKS = {
     { label: "GitHub", href: GITHUB_URL, external: true },
   ],
   Solutions: [
-    { label: "Multi-tenant SaaS", href: "/use-cases/saas-backend" },
-    { label: "Customer CRM", href: "/templates#crm" },
-    { label: "E-Commerce", href: "/templates#ecommerce" },
+    { label: "Multi-tenant SaaS", href: "/use-cases#multi-tenant-saas" },
+    { label: "Customer operations", href: "/use-cases#customer-operations" },
+    { label: "Commerce systems", href: "/use-cases#commerce-systems" },
+    { label: "Agent-facing APIs", href: "/use-cases#agent-facing-apis" },
     { label: "All use cases", href: "/use-cases" },
   ],
   Resources: [
     { label: "Blog", href: "/blog" },
     { label: "FAQ", href: "/faq" },
-    { label: "Customers", href: "/customers" },
+    { label: "Who it's for", href: "/who-its-for" },
     { label: "About", href: "/company" },
     { label: "Contact", href: "/contact" },
     { label: "Privacy Policy", href: "/privacy-policy" },

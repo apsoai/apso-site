@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { barlow, publicSans, robotoMono } from "@/assets/fonts";
+import { barlow, poppins, robotoMono } from "@/assets/fonts";
 import { TrackingScripts } from "@/components/analytics/tracking-scripts";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
 import { Providers } from "@/lib/providers";
@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${barlow.variable} ${publicSans.variable} ${robotoMono.variable} h-full antialiased`}
+      className={`${barlow.variable} ${poppins.variable} ${robotoMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-body text-fg-2 bg-bg-0">
         <TrackingScripts />

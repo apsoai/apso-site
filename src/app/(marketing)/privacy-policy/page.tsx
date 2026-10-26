@@ -1,134 +1,72 @@
 import type { Metadata } from "next";
-import { Database, FileCheck2, ShieldCheck, UserRoundCheck } from "lucide-react";
+import type { ReactNode } from "react";
+import { ChevronDown } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { Section } from "@/components/ui/section";
-import { PageHero } from "@/components/marketing/page-hero";
-import { HeroLedger } from "@/components/marketing/hero-ledger";
+import { ReadHeader } from "@/components/content/read-header";
+import { OnThisPage } from "@/components/content/on-this-page";
+import * as v1 from "./policy-v1";
+import * as v2 from "./policy-v2";
+
+export interface PolicySection {
+  id: string;
+  title: string;
+  body: ReactNode;
+}
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/privacy-policy" },
   title: "Privacy Policy",
   description: "How Mavric Technology collects, uses, shares, and protects information when you use Apso.",
 };
 
-const sections = [
-  ["information", "Information we collect"],
-  ["use", "How we use information"],
-  ["sharing", "Data sharing"],
-  ["code", "Your code and application data"],
-  ["security", "Security"],
-  ["rights", "Your rights"],
-  ["changes", "Changes"],
-  ["contact", "Contact"],
-];
+// The rewritten policy waits on counsel review. Until then the live text is served.
+const policy = process.env.NEXT_PUBLIC_PRIVACY_V2 === "1" ? v2 : v1;
 
 export default function PrivacyPolicyPage() {
+  const nav = policy.sections.map(({ id, title }) => ({ id, label: title }));
+
   return (
     <>
-      <PageHero
-        eyebrow="Legal"
-        title="Privacy Policy"
-        description="This policy explains the information Mavric Technology collects when you use Apso, why we use it, which service providers help operate the platform, and how to contact us about your data."
-        meta={["Last updated June 2026", "Applies to Apso services", "Operated by Mavric Technology, LLC"]}
-        visual={
-          <HeroLedger
-            label="Policy scope"
-            status="CURRENT"
-            rows={[
-              { label: "Account information", value: "Details you provide when creating an account or contacting us.", icon: UserRoundCheck },
-              { label: "Service operation", value: "Technical and usage information needed to run and improve Apso.", icon: Database },
-              { label: "Protection and rights", value: "Safeguards, requests, deletion, and policy updates.", icon: ShieldCheck },
-            ]}
-            footer="questions: privacy@mavric.tech"
-          />
-        }
-      />
+      <ReadHeader title="Privacy Policy">
+        Last updated {policy.updated}
+        <span aria-hidden="true" className="mx-2">·</span>
+        Questions: privacy@mavric.tech
+      </ReadHeader>
 
-      <Section>
+      <section className="bg-bg-0 pb-14 pt-4 lg:pb-24 lg:pt-12">
         <Container>
-          <div className="grid gap-10 lg:grid-cols-[240px_minmax(0,760px)] lg:justify-center lg:gap-16">
-            <aside>
-              <div className="lg:sticky lg:top-28">
-                <div className="flex items-center gap-3 border-b border-line-1 pb-4">
-                  <FileCheck2 aria-hidden="true" className="h-5 w-5 text-brand" />
-                  <div>
-                    <p className="font-display text-[14px] font-semibold text-fg-1">Apso Privacy Policy</p>
-                    <p className="mt-0.5 font-mono text-[9px] text-fg-5">REV. 2026-06</p>
-                  </div>
-                </div>
-                <nav className="mt-3" aria-label="Privacy policy sections">
-                  {sections.map(([id, label]) => (
-                    <a key={id} href={`#${id}`} className="block border-b border-line-1 py-3 text-[12px] text-fg-4 hover:text-brand">
-                      {label}
-                    </a>
-                  ))}
-                </nav>
-              </div>
+          <details className="group mb-6 rounded-[8px] border border-line-1 lg:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3.5 text-[14px] font-medium text-fg-1 [&::-webkit-details-marker]:hidden">
+              On this page: {nav.length} sections
+              <ChevronDown aria-hidden="true" className="h-5 w-5 text-fg-4 transition-transform group-open:rotate-180 motion-reduce:transition-none" />
+            </summary>
+            <ul className="border-t border-line-1 px-1 py-2">
+              {nav.map(({ id, label }) => (
+                <li key={id}>
+                  <a href={`#${id}`} className="block rounded-[6px] px-3 py-2.5 text-[14px] font-medium text-fg-3 hover:bg-bg-1 hover:text-fg-1">
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+
+          <div className="grid gap-12 lg:grid-cols-[240px_minmax(0,680px)] lg:gap-20">
+            <aside className="hidden lg:block">
+              <OnThisPage label="Privacy policy sections" items={nav} />
             </aside>
-
-            <article className="privacy-document">
-              <p className="document-intro">
-                Mavric Technology, LLC (&quot;Mavric,&quot; &quot;we,&quot; or &quot;us&quot;) operates the Apso platform, including apso.ai, app.apso.cloud, and related services. This policy describes how we collect, use, and protect information when you use those services.
-              </p>
-
-              <PolicySection id="information" title="Information we collect">
-                <p>We collect account and contact information you provide directly, including your name, email address, and company information when you create an account or contact us.</p>
-                <p>We collect product usage information through PostHog, including pages visited, features used, and interaction patterns. We also receive technical information such as browser type, IP address, and device information.</p>
-              </PolicySection>
-
-              <PolicySection id="use" title="How we use information">
-                <p>We use this information to provide and maintain Apso, process transactions, send billing and service notifications, respond to support requests, understand product usage, improve the service, and meet legal obligations.</p>
-              </PolicySection>
-
-              <PolicySection id="sharing" title="Data sharing">
-                <p>We do not sell personal information. We share information with service providers that help operate Apso, including AWS for hosting, Stripe for payments, Resend for email, and PostHog for product analytics. Their handling of information is governed by their agreements and privacy policies.</p>
-              </PolicySection>
-
-              <PolicySection id="code" title="Your code and application data">
-                <p>Code generated by Apso belongs to you. Application data in deployed services is processed according to the infrastructure model and services you select. We use access controls and operational procedures intended to limit access to what is required to provide and support the service.</p>
-              </PolicySection>
-
-              <PolicySection id="security" title="Security">
-                <p>We use administrative, technical, and organizational safeguards intended to protect information, including encryption in transit, encryption at rest where supported by the underlying service, and controlled credential storage. No method of transmission or storage can guarantee complete security.</p>
-              </PolicySection>
-
-              <PolicySection id="rights" title="Your rights">
-                <p>You may request access to, correction of, or deletion of your personal information by contacting privacy@mavric.tech. You can close your account at any time. We may retain records when required for legal, security, or legitimate operational reasons.</p>
-              </PolicySection>
-
-              <PolicySection id="changes" title="Changes">
-                <p>We may update this policy as the service changes. When we do, we will post the revised policy here and update the date at the top of the page. We will provide additional notice when required by law.</p>
-              </PolicySection>
-
-              <PolicySection id="contact" title="Contact">
-                <p>For questions or requests about this policy, email privacy@mavric.tech or use the <a href="/contact">contact form</a>.</p>
-              </PolicySection>
+            <article className="space-y-10 text-[17px] leading-[1.75] text-fg-3 [&_a]:text-brand [&_a]:underline hover:[&_a]:text-brand-hover">
+              {policy.intro}
+              {policy.sections.map(({ id, title, body }) => (
+                <section key={id} id={id} className="scroll-mt-28 space-y-3.5">
+                  <h2 className="font-display text-[22px] font-bold leading-tight text-fg-1 md:text-[26px]">{title}</h2>
+                  {body}
+                </section>
+              ))}
             </article>
-          </div>
-        </Container>
-      </Section>
-
-      <section className="border-y border-line-1 bg-bg-1 py-10">
-        <Container>
-          <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
-            <div>
-              <p className="font-display text-[19px] font-semibold text-fg-1">Questions about privacy or your information?</p>
-              <p className="mt-1 text-[13px] text-fg-4">Contact the team responsible for privacy requests.</p>
-            </div>
-            <a href="mailto:privacy@mavric.tech" className="inline-flex min-h-11 items-center justify-center rounded-sm bg-navy px-5 font-display text-[13px] font-semibold text-white hover:bg-brand">
-              privacy@mavric.tech
-            </a>
           </div>
         </Container>
       </section>
     </>
-  );
-}
-
-function PolicySection({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
-  return (
-    <section id={id} className="scroll-mt-28 border-t border-line-1 pt-8">
-      <h2>{title}</h2>
-      {children}
-    </section>
   );
 }
