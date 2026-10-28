@@ -63,7 +63,7 @@ const technicalQuestions = [
 const pricingQuestions = [
   {
     question: "How much does Apso cost?",
-    answer: "Pricing has two parts. The workspace plan is Free at $0, Team at $99 per month flat, or Business, which is priced with sales. Each deployed service has its own tier, bought separately on any plan: one Free service per workspace, then Small at $25. Medium and Large are coming soon.",
+    answer: "Pricing has two parts. The workspace plan is Free at $0, Team at $99 per month flat, or Business, which is priced with sales. Each deployed service has its own tier, bought separately on any plan: one Free service per workspace, then Small at $25, Medium at $49, or Large at $99.",
   },
   {
     question: "Does Apso charge per seat?",
