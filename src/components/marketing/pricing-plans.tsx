@@ -22,7 +22,6 @@ type ServiceTier = {
   badge?: string;
   cta?: string;
   primary?: boolean;
-  comingSoon?: boolean;
 };
 
 export const workspacePlans: Plan[] = [
@@ -84,14 +83,14 @@ export const serviceTiers: ServiceTier[] = [
     price: "$49",
     period: "per service / month",
     description: "Medium gives a service more resources than Small.",
-    comingSoon: true,
+    cta: "Scale a service",
   },
   {
     name: "Large",
     price: "$99",
     period: "per service / month",
     description: "Large gives a service the most resources Apso offers.",
-    comingSoon: true,
+    cta: "Scale a service",
   },
 ];
 
@@ -99,7 +98,7 @@ const faqItems = [
   {
     question: "How do workspace plans and service tiers fit together?",
     answer:
-      "A workspace plan sets team controls and who runs operations. A service tier sets the compute for one deployed service. You buy them separately. Any workspace plan, including Free, can add Small services today, and Medium and Large when they launch.",
+      "A workspace plan sets team controls and who runs operations. A service tier sets the compute for one deployed service. You buy them separately. Any workspace plan, including Free, can add Small, Medium, or Large services.",
   },
   {
     question: "What is a service for billing?",
@@ -153,7 +152,7 @@ export function PricingPlans() {
         <Container>
           <h2 className="font-display text-[28px] font-bold text-fg-1 md:text-[32px]">Service tiers</h2>
           <p className="mt-7 text-[16px] leading-[1.6] text-fg-4">
-            You choose a tier for each service, on any workspace plan. Medium and Large are coming soon.
+            You choose a tier for each service, on any workspace plan.
           </p>
           <div className="mt-7 grid overflow-hidden rounded-[12px] border border-line-1 bg-bg-0 md:grid-cols-2 lg:grid-cols-1">
             {serviceTiers.map((tier, i) => (
@@ -217,7 +216,6 @@ function PlanCard({ plan, primary, dark }: { plan: Plan; primary?: boolean; dark
 }
 
 function TierRow({ tier, index }: { tier: ServiceTier; index: number }) {
-  const muted = tier.comingSoon;
   return (
     <div
       className={`flex flex-col gap-3 px-6 py-[22px] lg:flex-row lg:items-center lg:gap-6 ${
@@ -228,20 +226,17 @@ function TierRow({ tier, index }: { tier: ServiceTier; index: number }) {
     >
       <div className="flex shrink-0 flex-col gap-1 lg:w-[200px]">
         <div className="flex items-center gap-2">
-          <h3 className={`font-display text-[18px] font-bold ${muted ? "text-fg-4" : "text-fg-1"}`}>{tier.name}</h3>
+          <h3 className="font-display text-[18px] font-bold text-fg-1">{tier.name}</h3>
           {tier.badge && (
             <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[12px] font-medium text-brand">{tier.badge}</span>
           )}
-          {muted && (
-            <span className="rounded-full bg-[#FEF3C7] px-2 py-0.5 text-[12px] font-medium text-[#92400E]">Coming soon</span>
-          )}
         </div>
-        <p className={`flex items-baseline gap-1.5 ${muted ? "text-fg-4" : "text-fg-1"}`}>
+        <p className="flex items-baseline gap-1.5 text-fg-1">
           <span className="font-display text-[24px] font-extrabold">{tier.price}</span>
           <span className="text-[13px] text-fg-4">{tier.period}</span>
         </p>
       </div>
-      <p className={`flex-1 text-[15px] leading-[1.6] ${muted ? "text-fg-4" : "text-fg-3"}`}>{tier.description}</p>
+      <p className="flex-1 text-[15px] leading-[1.6] text-fg-3">{tier.description}</p>
       {tier.cta ? (
         <a href={APP_URL} {...external(APP_URL)} className={`w-full lg:w-auto ${tier.primary ? btnPrimary : btnOutline}`}>
           {tier.cta}

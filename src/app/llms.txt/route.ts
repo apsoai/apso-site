@@ -17,7 +17,7 @@ export function GET() {
     .map((p) => `- ${p.name}: ${[p.price, p.period].filter(Boolean).join(" ")}. ${p.description}`)
     .join("\n");
   const tiers = serviceTiers
-    .map((t) => `- ${t.name}: ${t.price} ${t.period}${t.comingSoon ? " (coming soon)" : ""}. ${t.description}`)
+    .map((t) => `- ${t.name}: ${t.price} ${t.period}. ${t.description}`)
     .join("\n");
 
   const body = `# Apso
