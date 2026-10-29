@@ -69,7 +69,7 @@ Apso's MCP server designs and validates the schema, generates code and diagnoses
 | Where access rules live | `scopeBy` in the schema, generated into guard code (TypeScript today) | Security Rules per document path |
 | What the agent changes | The schema file, reviewed in a pull request | Live documents and rules, through the MCP server |
 | Business logic | TypeScript, Python or Go in `extensions/` | Cloud Functions in JavaScript, TypeScript or Python |
-| Auth | BetterAuth, Auth0, Clerk, Cognito, API keys or custom sessions | Firebase Authentication |
+| Auth | Better Auth, Auth0, Clerk, Cognito, any JWKS issuer (Supabase Auth, Firebase), API keys or custom sessions | Firebase Authentication |
 | Offline and realtime | Not generated | Core strength, with offline persistence on mobile and web |
 | Where it runs | Apso Cloud, or anywhere you run Docker | Google Cloud |
 

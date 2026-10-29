@@ -60,7 +60,7 @@ Each function carries its own authorization check, so the review has to confirm 
 | API | Generated REST endpoints | Queries, mutations and actions over WebSockets, plus optional HTTP actions |
 | Where access rules live | `scopeBy` in the schema, generated into guard code (TypeScript today) | Checks written inside each function |
 | Languages | TypeScript, Python or Go | TypeScript |
-| Auth | BetterAuth, Auth0, Clerk, Cognito, API keys or custom sessions | Clerk, WorkOS AuthKit, Auth0, custom OIDC, or Convex Auth (beta) |
+| Auth | Better Auth, Auth0, Clerk, Cognito, any JWKS issuer (Supabase Auth, Firebase), API keys or custom sessions | Clerk, WorkOS AuthKit, Auth0, custom OIDC, or Convex Auth (beta) |
 | Runtime the code needs | None from Apso; standard NestJS, FastAPI or Gin | The Convex runtime, in Convex Cloud or self-hosted |
 | License | Generator, templates and generated code are Apache-2.0 | FSL, converting to Apache-2.0 after two years |
 

@@ -15,7 +15,7 @@ Supabase offers a managed platform where you use its infrastructure, APIs, and s
 |---------|------|----------|
 | **Code Ownership** | Full ownership of generated code | No (PostgREST API layer is opaque) |
 | **Database** | PostgreSQL | Managed PostgreSQL |
-| **Authentication** | BYOA (Auth0, Clerk, BetterAuth, Cognito) | Built-in Supabase Auth |
+| **Authentication** | BYOA (Better Auth, Auth0, Clerk, Cognito, any JWKS issuer including Supabase Auth) | Built-in Supabase Auth |
 | **Real-time** | Not native (extensible) | First-class real-time subscriptions |
 | **Languages** | TypeScript, Golang, and Python backends | N/A (SDK-based consumption) |
 | **Deployment** | Apso-managed or your cloud | Managed Supabase cloud or self-hosted |
@@ -38,7 +38,7 @@ Supabase has real strengths that make it the right choice for many projects.
 
 **Multi-language support.** If your team writes Python or Golang, you get a backend in that language. Supabase is JavaScript/TypeScript-centric.
 
-**Authentication flexibility.** Apso supports BetterAuth, Auth0, Clerk, Cognito, and API keys. The generated auth guard produces a normalized AuthContext, so switching providers means changing one line in your schema and regenerating.
+**Authentication flexibility.** Apso generates auth for Better Auth, Auth0, Clerk, Amazon Cognito, any other provider that publishes a JWKS, API keys, or your own database sessions. Every option produces the same auth context in your code, so switching providers means replacing the `auth` block in your schema and regenerating. You can even keep Supabase Auth and point Apso at its key set.
 
 **Application-layer multi-tenancy.** Apso implements data scoping at the application layer, making it portable across databases. Supabase relies on PostgreSQL RLS, which is powerful but Postgres-specific and harder to debug.
 
