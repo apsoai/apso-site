@@ -23,8 +23,9 @@ Apso does not force an auth provider on you. Instead, it generates authenticatio
 - **Cognito** for AWS ecosystem integration
 - **API Keys** for service-to-service communication
 - **Custom DB Sessions** for your own session logic
+- **Any JWKS issuer** (Supabase Auth, Firebase, Okta, WorkOS, Better Auth's JWT plugin) through the generic `jwt` provider
 
-All providers are supported in the same `.apsorc` configuration block. You switch providers by changing a single line, then regenerating the service.
+Every provider is configured in the same `auth` block in `.apsorc`. Switching means replacing that block (the provider name, its issuer, and its claim names) and regenerating the service.
 
 ## The Normalized AuthContext
 
@@ -52,7 +53,7 @@ Imagine you are running your API with BetterAuth. Six months in, you decide to s
 
 Your business logic? **Completely unchanged.** Your services still call `req.auth.userId`. Your multi-tenant data scoping still reads `req.auth.organizationId`. None of that changes.
 
-This is impossible with monolithic platforms. With BYOA, it means changing a few lines in `.apsorc`.
+This is impossible with monolithic platforms. With BYOA, the API side is the `auth` block in `.apsorc` plus a regenerate. Your frontend's sign-in changes with the provider, and rows that store the old provider's user IDs need mapping to the new ones.
 
 ## The Bigger Philosophy
 

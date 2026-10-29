@@ -4,7 +4,7 @@ const SPECS = [
   ["Repeatable project structure", "The schema and CLI version determine the generated entities, controllers, services, and DTOs."],
   ["Familiar framework stacks", "Generate NestJS with TypeORM, FastAPI with SQLAlchemy, or Gin with GORM."],
   ["PostgreSQL migrations", "Preview schema changes locally and commit language-native migration files with the service."],
-  ["Auth and tenant context", "Use Better Auth or another JWT provider and carry tenant scope through generated request handling."],
+  ["Auth and tenant context", "Use Better Auth, Auth0, Clerk, Cognito, any JWKS provider, or API keys, and carry tenant scope through generated request handling."],
   ["REST API and TypeScript SDK", "Connect through standard HTTP or use the SDK for fluent filters, sorting, pagination, and mutations."],
   ["No lock-in. You own the code.", "The generated service lives in your repository. Run, test, extend, and deploy it anywhere. Apso is not required in production."],
 ];

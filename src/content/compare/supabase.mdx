@@ -78,7 +78,7 @@ Apso's MCP server takes the other approach. Its tools design and validate the sc
 | What the agent changes | The schema file, reviewed in a pull request | The live project, unless you use read-only mode or a branch |
 | API | Generated REST endpoints | Auto-generated REST and GraphQL over Postgres |
 | Business logic | TypeScript, Python or Go in `extensions/` | SQL functions, triggers and Edge Functions |
-| Auth | BetterAuth, Auth0, Clerk, Cognito, API keys or custom sessions | Supabase Auth |
+| Auth | Better Auth, Auth0, Clerk, Cognito, any JWKS issuer (Supabase Auth, Firebase), API keys or custom sessions | Supabase Auth |
 | Realtime | Not generated | Broadcast, Presence and Postgres Changes |
 | License | Generator, templates and generated code are Apache-2.0 | Platform is Apache-2.0 |
 
