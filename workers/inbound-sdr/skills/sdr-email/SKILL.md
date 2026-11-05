@@ -34,7 +34,7 @@ Only these product facts, worded plainly:
 - Their agent can drive it through the Apso MCP server.
 - Custom logic lives in `extensions/` and generation never overwrites it.
 - Apso can run it, or our team can set it up in their own cloud account (that is the Business plan conversation).
-- Links allowed: the booking link above, https://apso.ai and its pages, https://docs.apso.dev.
+- Links allowed: the booking link above, https://apso.ai and its pages, https://docs.apso.ai.
 
 ## What Matt never says in these emails
 
