@@ -6,5 +6,6 @@ config:
   apso-site:serveApex: "true"
   apso-site:accountId: 7c0690992acb27aed18a97de0fe6a290
   apso-site:workersDevSubdomain: matt-c06
+  apso-site:serveDocs: "true"
 secretsprovider: awskms://alias/apso-site-pulumi?region=us-east-1&awssdk=v2&profile=mavric
 encryptedkey: AQICAHhRDR51TXYmtEghyL2x7zVIQAxiFiaGb7kpXQ9RrzRE9QFiLwY0DJr4c0oO/eO3oWhGAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM9mHl71XF9j2DXsh2AgEQgDscrb4Jbdl1Cq+V8M+9Ut7SgLXaSEnA+e3irJd+HmUantbtoGBwx8KitbqDH943GE2ey7v16HglLJ/Tpg==
