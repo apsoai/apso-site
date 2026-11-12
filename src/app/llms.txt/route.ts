@@ -51,8 +51,10 @@ ${links("blog")}
 Workspace plans (one per workspace, unlimited members on every plan):
 ${plans}
 
-Service tiers (bought per deployed service, on any workspace plan):
+Service tiers (bought per deployed service; paid tiers need a Pro, Team or Business workspace):
 ${tiers}
+
+Pro and Team include a $10 monthly compute credit for one production service, so Pro with one Starter service is $25 per month in total. A staging copy of a paid service is an add-on at the same tier prices.
 
 Self-hosting: export the generated code and run it anywhere, free.
 

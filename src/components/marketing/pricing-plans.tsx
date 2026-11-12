@@ -35,11 +35,21 @@ export const workspacePlans: Plan[] = [
     href: APP_URL,
   },
   {
+    name: "Pro",
+    price: "$25",
+    period: "per month, flat",
+    description:
+      "Run paid services and use them commercially. Includes a $10 monthly compute credit, enough for one Starter service.",
+    features: ["Everything in Free", "Paid service tiers", "Commercial use", "$10 compute credit for one production service"],
+    cta: "Start with Pro",
+    href: APP_URL,
+  },
+  {
     name: "Team",
     price: "$99",
     period: "per month, flat",
     description: "Control who can do what once the team grows. No per-seat charge.",
-    features: ["Everything in Free", "Roles and permissions"],
+    features: ["Everything in Pro", "Roles and permissions"],
     cta: "Start a team",
     href: APP_URL,
   },
@@ -65,29 +75,36 @@ export const serviceTiers: ServiceTier[] = [
   {
     name: "Free",
     price: "$0",
-    period: "one per workspace",
+    period: "one per owner",
     description: "Deploy a backend to try it out. Not for commercial use.",
     cta: "Deploy for free",
   },
   {
-    name: "Small",
-    price: "$25",
+    name: "Starter",
+    price: "$10",
     period: "per service / month",
-    description: "Run a production service with the operational basics handled by Apso.",
-    badge: "Production default",
+    description: "Run a first production service with the operational basics handled by Apso.",
+    badge: "Covered by the Pro credit",
     cta: "Build a production service",
     primary: true,
   },
   {
+    name: "Small",
+    price: "$15",
+    period: "per service / month",
+    description: "Small allows more traffic than Starter, for lightweight APIs and MVPs.",
+    cta: "Scale a service",
+  },
+  {
     name: "Medium",
-    price: "$49",
+    price: "$60",
     period: "per service / month",
     description: "Medium gives a service more resources than Small.",
     cta: "Scale a service",
   },
   {
     name: "Large",
-    price: "$99",
+    price: "$110",
     period: "per service / month",
     description: "Large gives a service the most resources Apso offers.",
     cta: "Scale a service",
@@ -98,7 +115,17 @@ const faqItems = [
   {
     question: "How do workspace plans and service tiers fit together?",
     answer:
-      "A workspace plan sets team controls and who runs operations. A service tier sets the compute for one deployed service. You buy them separately. Any workspace plan, including Free, can add Small, Medium, or Large services.",
+      "A workspace plan sets what the workspace can do. A service tier sets the compute for one deployed service. Paid service tiers need a Pro, Team, or Business workspace. Pro and Team include a $10 monthly compute credit, which covers one Starter service or takes $10 off one larger production service.",
+  },
+  {
+    question: "What does a typical setup cost?",
+    answer:
+      "Pro with one Starter service is $25 per month, because the credit covers the service. Pro with one Small service is $30, with one Medium $75, and with one Large $125. Each additional service is billed at its tier price.",
+  },
+  {
+    question: "How is staging billed?",
+    answer:
+      "Staging is an add-on to a paid service: a separate copy with its own URL and database. You pick its size and it costs the same as a service of that size, starting at $10 per month for Starter. The compute credit does not apply to staging.",
   },
   {
     question: "What is a service for billing?",
@@ -108,7 +135,7 @@ const faqItems = [
   {
     question: "Does Apso charge per seat?",
     answer:
-      "No. Every workspace plan includes unlimited members. Team is a flat $99 per month for the workspace. Services are billed separately by tier.",
+      "No. Every workspace plan includes unlimited members. Pro is a flat $25 and Team a flat $99 per month for the workspace. Services are billed separately by tier.",
   },
   {
     question: "Do we own the generated code?",
@@ -139,7 +166,7 @@ export function PricingPlans() {
         <Container>
           <h2 className="font-display text-[28px] font-bold text-fg-1 md:text-[32px]">Workspace plans</h2>
           <p className="mt-7 text-[16px] leading-[1.6] text-fg-4">One plan per workspace. Every plan includes unlimited members.</p>
-          <div className="mt-7 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-7 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {workspacePlans.map((plan, i) => (
               <PlanCard key={plan.name} plan={plan} primary={i === 1} />
             ))}
@@ -152,7 +179,8 @@ export function PricingPlans() {
         <Container>
           <h2 className="font-display text-[28px] font-bold text-fg-1 md:text-[32px]">Service tiers</h2>
           <p className="mt-7 text-[16px] leading-[1.6] text-fg-4">
-            You choose a tier for each service, on any workspace plan.
+            You choose a tier for each service. Paid tiers need a Pro, Team, or Business workspace. A staging copy of a
+            paid service is an add-on at the same prices, from $10 per month.
           </p>
           <div className="mt-7 grid overflow-hidden rounded-[12px] border border-line-1 bg-bg-0 md:grid-cols-2 lg:grid-cols-1">
             {serviceTiers.map((tier, i) => (
@@ -183,7 +211,7 @@ function PlanCard({ plan, primary, dark }: { plan: Plan; primary?: boolean; dark
   return (
     <article
       className={`flex flex-col gap-4 rounded-[12px] p-7 ${
-        dark ? "bg-navy text-white md:col-span-2 lg:col-span-1" : "border border-line-1 bg-bg-0 text-fg-1"
+        dark ? "bg-navy text-white" : "border border-line-1 bg-bg-0 text-fg-1"
       }`}
     >
       <h3 className="font-display text-[20px] font-bold">{plan.name}</h3>
