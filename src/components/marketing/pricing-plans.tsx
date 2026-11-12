@@ -103,7 +103,6 @@ export const workspacePlans: Plan[] = [
     features: [
       "Everything in Pro",
       "Roles and permissions",
-      "Per-service member access",
       "Data export from the Data tab",
       "30 days of logs",
       "Flat price, no per-seat charge",
