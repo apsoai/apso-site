@@ -1,6 +1,6 @@
 # infra: apso.ai on Cloudflare (Pulumi)
 
-Spec: mavric/apso-site#28. This Pulumi TypeScript program owns everything around the site. The site code is built by `@opennextjs/cloudflare` and deployed by wrangler, through Workers Builds or `npm run cf:deploy`.
+Spec: mavric/apso-site#28. This Pulumi TypeScript program owns everything around the site. The site code is built by `@opennextjs/cloudflare` and deployed by wrangler from GitHub Actions (`.github/workflows/deploy.yml`) on every push to `main`.
 
 | Resource | Where |
 | --- | --- |
@@ -13,7 +13,7 @@ Spec: mavric/apso-site#28. This Pulumi TypeScript program owns everything around
 
 Worker secrets go through wrangler because the Cloudflare provider (v6) can only set secrets on a script that it uploads itself, and wrangler uploads this one. The values reach wrangler on stdin and are stored encrypted in Pulumi state. Secrets persist across `wrangler deploy`.
 
-`NEXT_PUBLIC_*` values are inlined at build time, so they are Workers Builds build variables, not Worker secrets.
+`NEXT_PUBLIC_*` values are inlined at build time, so they are GitHub Actions repository variables, not Worker secrets.
 
 ## Secrets
 
@@ -50,14 +50,12 @@ npm run cf:build
 scripts/with-secrets.sh npm run cf:preview
 ```
 
-Workers Builds is not covered by the provider. Set it once in the dashboard, after `pulumi up` has created the Worker (Workers & Pages > apso-site > Settings > Build):
+Deploys run in GitHub Actions (`.github/workflows/deploy.yml`), not Workers Builds, so the Cloudflare GitHub app is not needed. The workflow builds every pull request and deploys on every push to `main`. The docs site (`apsoai/docs`) has the same workflow for the `apso-docs` Worker. Set once per repository:
 
-- Git repository: `apsoai/apso-site`, production branch `main` (needs the Cloudflare Workers and Pages GitHub app installed on the apsoai org)
-- Build command: `npx opennextjs-cloudflare build`
-- Deploy command: `npx opennextjs-cloudflare deploy`
-- Non-production branch deploy command: `npx opennextjs-cloudflare upload` (preview URL per PR, commented on the PR)
-- Root directory: `/`
-- Build variables: `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST`, `NEXT_PUBLIC_GTM_ID`, `NEXT_PUBLIC_GA_ID`, `NEXT_PUBLIC_META_PIXEL_ID`, `NEXT_PUBLIC_PRIVACY_V2` (only the ones in use)
+- Secret `CLOUDFLARE_API_TOKEN`: a token with account-level Workers Scripts edit.
+- Variables (site only): `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST`, `NEXT_PUBLIC_GTM_ID`, and `NEXT_PUBLIC_GA_ID`, `NEXT_PUBLIC_META_PIXEL_ID`, `NEXT_PUBLIC_PRIVACY_V2` when in use.
+
+Rerun a deploy without a new commit: `gh workflow run deploy --ref main`.
 
 ## Phase 2: everything except the cutover
 
