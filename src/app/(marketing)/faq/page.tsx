@@ -40,7 +40,7 @@ const generalQuestions = [
 const technicalQuestions = [
   {
     question: "How does an agent work with Apso?",
-    answer: "Apso turns Claude, Codex, or another compatible coding agent into an Apso specialist. Rules teach the agent Apso's architecture and guardrails. Task skills teach workflows such as schema design, auth, migrations, and feature development. MCP tools ground that expertise in the current project and let the agent inspect, validate, generate, and test without making you translate the work into CLI commands.",
+    answer: "Apso turns Claude, Codex, or another compatible coding agent into a database and backend architecture specialist. Most AI-built apps get their attention on the interface, and the backend design is overlooked: the data model, access boundaries, auth, and migrations. Apso gives the agent that expertise and the guardrails to apply it. Rules teach sound backend architecture. Task skills teach workflows such as schema design, auth, migrations, and feature development. MCP tools ground that expertise in the current project and let the agent inspect, validate, generate, and test without making you translate the work into CLI commands.",
   },
   {
     question: "Which database does Apso use?",

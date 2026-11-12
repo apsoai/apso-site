@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/ui/container";
-import { FOOTER_LINKS, GITHUB_URL } from "@/lib/constants";
+import { FOOTER_LINKS, GITHUB_URL, TAGLINE } from "@/lib/constants";
 
 export function Footer() {
   return (
@@ -21,6 +21,7 @@ export function Footer() {
             <p className="mt-3 text-sm text-fg-4 leading-relaxed">
               The backend foundation for AI-built software.
             </p>
+            <p className="mt-1 text-sm font-semibold text-fg-2">{TAGLINE}</p>
             {/* Social */}
             <div className="mt-4 flex gap-4">
               <a

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { APP_URL, DOCS_URL } from "@/lib/constants";
+import { APP_URL, DOCS_URL, TAGLINE } from "@/lib/constants";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/use-cases" },
@@ -142,6 +142,7 @@ export default function UseCasesIndex() {
       <section className="bg-navy text-white">
         <div className={`${wrap} flex flex-col gap-10 py-10 md:flex-row md:items-center md:justify-between md:py-16`}>
           <div className="max-w-[620px]">
+            <p className="mb-3 text-[15px] font-semibold text-[#93C5FD] md:text-[16px]">{TAGLINE}</p>
             <h2 className="font-display text-[28px] font-extrabold leading-tight md:text-[36px]">
               Give your agent a backend pattern it can build on
             </h2>

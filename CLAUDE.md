@@ -2,7 +2,7 @@
 
 ## What This Is
 
-The apso.ai marketing site. Standalone Next.js 16 app deployed to AWS Amplify. Replaces the WordPress site.
+The apso.ai marketing site. Standalone Next.js 16 app served by a Cloudflare Worker (OpenNext). Replaces the WordPress site.
 
 ## Stack
 
@@ -41,5 +41,5 @@ All copy follows the vault writing guide: no em dashes, no fragments, plain dire
 
 ## Git
 
-Repo: `apsoai/site`
-Deployed via AWS Amplify to `apso.ai`
+Repo: `apsoai/apso-site`
+Deployed to `apso.ai` by Cloudflare Workers Builds on push to `main` (see `infra/README.md`). By hand: `scripts/with-secrets.sh npm run cf:deploy`.

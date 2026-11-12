@@ -51,6 +51,8 @@ ${links("blog")}
 Workspace plans (one per workspace, unlimited members on every plan):
 ${plans}
 
+Every service is a whole backend on every tier: its own PostgreSQL database, a generated REST API in front of it, and an MCP server that exposes the same API to AI agents under the same access rules. The code lives in your GitHub repository.
+
 Service tiers (bought per deployed service; paid tiers need a Pro, Team or Business workspace):
 ${tiers}
 

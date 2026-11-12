@@ -52,7 +52,7 @@ scripts/with-secrets.sh npm run cf:preview
 
 Workers Builds is not covered by the provider. Set it once in the dashboard, after `pulumi up` has created the Worker (Workers & Pages > apso-site > Settings > Build):
 
-- Git repository: `mavric/apso-site`, production branch `main`
+- Git repository: `apsoai/apso-site`, production branch `main` (needs the Cloudflare Workers and Pages GitHub app installed on the apsoai org)
 - Build command: `npx opennextjs-cloudflare build`
 - Deploy command: `npx opennextjs-cloudflare deploy`
 - Non-production branch deploy command: `npx opennextjs-cloudflare upload` (preview URL per PR, commented on the PR)
