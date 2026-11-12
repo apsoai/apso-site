@@ -1,0 +1,52 @@
+name: deploy
+
+# Builds the site on every pull request and deploys apso.ai on every push to main.
+# The Worker, its route and its runtime secrets are owned by Pulumi (infra/); this only uploads code.
+#
+# Needs, set once on the repository:
+#   secret    CLOUDFLARE_API_TOKEN  (account: Workers Scripts edit)
+#   variables NEXT_PUBLIC_POSTHOG_KEY, NEXT_PUBLIC_POSTHOG_HOST, NEXT_PUBLIC_GTM_ID
+#             (optional: NEXT_PUBLIC_GA_ID, NEXT_PUBLIC_META_PIXEL_ID, NEXT_PUBLIC_PRIVACY_V2)
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time, and a newer push waits instead of cancelling a deploy that is uploading.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build
+        run: npx opennextjs-cloudflare build
+        env:
+          # NEXT_PUBLIC_* values are inlined at build time. They are public, so they are variables.
+          NEXT_PUBLIC_POSTHOG_KEY: ${{ vars.NEXT_PUBLIC_POSTHOG_KEY }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ vars.NEXT_PUBLIC_POSTHOG_HOST }}
+          NEXT_PUBLIC_GTM_ID: ${{ vars.NEXT_PUBLIC_GTM_ID }}
+          NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
+          NEXT_PUBLIC_META_PIXEL_ID: ${{ vars.NEXT_PUBLIC_META_PIXEL_ID }}
+          NEXT_PUBLIC_PRIVACY_V2: ${{ vars.NEXT_PUBLIC_PRIVACY_V2 }}
+      - name: Deploy to Cloudflare
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: npx opennextjs-cloudflare deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # Not a secret: the same id is in infra/README.md.
+          CLOUDFLARE_ACCOUNT_ID: 7c0690992acb27aed18a97de0fe6a290

@@ -42,4 +42,4 @@ All copy follows the vault writing guide: no em dashes, no fragments, plain dire
 ## Git
 
 Repo: `apsoai/apso-site`
-Deployed to `apso.ai` by Cloudflare Workers Builds on push to `main` (see `infra/README.md`). By hand: `scripts/with-secrets.sh npm run cf:deploy`.
+Deployed to `apso.ai` by GitHub Actions on push to `main` (`.github/workflows/deploy.yml`); every pull request gets a build check. Rerun a deploy with `gh workflow run deploy --ref main`. No local secrets are needed.
