@@ -1,12 +1,13 @@
 import { Container } from "@/components/ui/container";
 import { Dog } from "@/components/home/dog";
-import { APP_URL, DOCS_URL } from "@/lib/constants";
+import { APP_URL, DOCS_URL, TAGLINE } from "@/lib/constants";
 
 export function CtaBand() {
   return (
     <section className="relative overflow-hidden bg-brand pb-[150px] pt-14 text-white md:pt-[104px]" data-hm="band">
       <Container>
         <div className="grid max-w-[700px] gap-6">
+          <p className="text-[16px] font-semibold text-white/85 md:text-[18px]">{TAGLINE}</p>
           <h2 className="font-display text-[38px] font-extrabold leading-[1.0] tracking-[-0.02em] text-white md:text-[68px]">
             Give your product a backend that can grow with it
           </h2>

@@ -2,6 +2,8 @@ export const SITE_NAME = "Apso";
 export const SITE_DESCRIPTION =
   "Apso gives developers, product teams, and AI agents a deterministic path from product model to scalable backend. Consistently generate code, APIs, migrations, and infrastructure you own.";
 export const SITE_URL = "https://apso.ai";
+/** Brand tagline. Shown in the footer and above the closing call to action, where the dogs are together. */
+export const TAGLINE = "Our pack has your back end.";
 export const APP_URL = "https://app.apso.cloud";
 export const DOCS_URL = "https://docs.apso.ai";
 export const GITHUB_URL = "https://github.com/apsoai";

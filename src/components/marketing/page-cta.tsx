@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { APP_URL, DOCS_URL } from "@/lib/constants";
+import { APP_URL, DOCS_URL, TAGLINE } from "@/lib/constants";
 
 interface PageCtaProps {
   eyebrow?: string;
@@ -28,6 +28,7 @@ export function PageCta({
       <Container>
         <div className="grid items-end gap-8 lg:grid-cols-[1fr_auto]">
           <div className="max-w-[780px]">
+            <p className="mb-3 text-[15px] font-semibold text-[#93C5FD] md:text-[16px]">{TAGLINE}</p>
             <h2 className="font-display text-[32px] font-extrabold leading-tight text-white md:text-[40px]">
               {title}
             </h2>

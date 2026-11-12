@@ -3,6 +3,7 @@ import { Container } from "@/components/ui/container";
 import { PageHero } from "@/components/marketing/page-hero";
 import { PricingPlans } from "@/components/marketing/pricing-plans";
 import { SittingDogs } from "@/components/marketing/sitting-dogs";
+import { TAGLINE } from "@/lib/constants";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/pricing" },
@@ -36,6 +37,7 @@ export default function PricingPage() {
         <Container>
           <div className="flex flex-col gap-8 md:flex-row md:items-center">
             <div className="flex-1">
+              <p className="mb-3 text-[15px] font-semibold text-[#93C5FD] md:text-[16px]">{TAGLINE}</p>
               <h2 className="max-w-[740px] font-display text-[30px] font-extrabold leading-[1.1] md:text-[36px]">
                 Review the backend before you choose how to run it
               </h2>

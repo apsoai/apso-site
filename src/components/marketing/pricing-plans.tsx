@@ -26,13 +26,25 @@ type ServiceTier = {
   primary?: boolean;
 };
 
-/** What a service has on every tier, Free included. */
+/** The three layers of every service, on every tier, Free included. */
+export const servicePillars = [
+  {
+    title: "PostgreSQL database",
+    text: "Each service has its own database. Migrations are generated and tested before each deploy.",
+  },
+  {
+    title: "REST API",
+    text: "Generated endpoints in front of the database, with OpenAPI docs, a TypeScript SDK, and API keys. Your access rules are enforced here.",
+  },
+  {
+    title: "MCP server",
+    text: "The same API as tools an AI agent can call, under the same access rules. Turn it on in the schema.",
+  },
+];
+
+/** What else a service has on every tier. */
 export const serviceIncludes = [
-  "Its own PostgreSQL database",
-  "A REST API with OpenAPI docs",
   "The code in your GitHub repository, in TypeScript, Python, or Go",
-  "Migrations generated and tested before each deploy",
-  "TypeScript SDK and API keys",
   "Bring your own auth: Auth0, Clerk, Cognito, or Better Auth",
 ];
 
@@ -54,6 +66,7 @@ export const workspacePlans: Plan[] = [
       "Unlimited members",
       "Everyone can build and deploy",
       "One free hosted service",
+      "Database, REST API, and MCP server in every service",
       "AI schema builder, 50K tokens a month",
       "Export the code and run it anywhere",
       "Not for commercial use",
@@ -232,7 +245,29 @@ export function PricingPlans() {
             paid service is an add-on at the same prices, from $10 per month.
           </p>
           <div className="mt-7 grid gap-5 lg:grid-cols-3">
-            <IncludesCard title="Every service includes" items={serviceIncludes} className="lg:col-span-2" columns />
+            <div className="rounded-[12px] border border-line-1 bg-bg-0 p-6 lg:col-span-2">
+              <h3 className="font-display text-[20px] font-bold text-fg-1">Every service is a whole backend</h3>
+              <p className="mt-2 text-[15px] leading-[1.6] text-fg-4">
+                A database on its own still leaves the API for you to build. Each Apso service comes with all three
+                layers, on every tier.
+              </p>
+              <dl className="mt-5 grid gap-5 sm:grid-cols-3">
+                {servicePillars.map(({ title, text }) => (
+                  <div key={title} className="border-t-2 border-brand pt-3">
+                    <dt className="font-display text-[16px] font-bold text-fg-1">{title}</dt>
+                    <dd className="mt-1 text-[14px] leading-[1.55] text-fg-3">{text}</dd>
+                  </div>
+                ))}
+              </dl>
+              <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+                {serviceIncludes.map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-[15px] leading-[1.5] text-fg-3">
+                    <Check aria-hidden="true" className="mt-0.5 h-[18px] w-[18px] shrink-0 text-brand" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
             <IncludesCard title="Every paid tier adds" items={paidTierAdds} />
           </div>
           <div className="mt-5 grid overflow-hidden rounded-[12px] border border-line-1 bg-bg-0 md:grid-cols-2 lg:grid-cols-1">
@@ -296,21 +331,11 @@ function PlanCard({ plan, primary, dark }: { plan: Plan; primary?: boolean; dark
   );
 }
 
-function IncludesCard({
-  title,
-  items,
-  columns,
-  className = "",
-}: {
-  title: string;
-  items: string[];
-  columns?: boolean;
-  className?: string;
-}) {
+function IncludesCard({ title, items }: { title: string; items: string[] }) {
   return (
-    <div className={`rounded-[12px] border border-line-1 bg-bg-0 p-6 ${className}`}>
+    <div className="rounded-[12px] border border-line-1 bg-bg-0 p-6">
       <h3 className="font-display text-[18px] font-bold text-fg-1">{title}</h3>
-      <ul className={`mt-4 grid gap-3 ${columns ? "sm:grid-cols-2" : ""}`}>
+      <ul className="mt-4 grid gap-3">
         {items.map((item) => (
           <li key={item} className="flex items-start gap-2.5 text-[15px] leading-[1.5] text-fg-3">
             <Check aria-hidden="true" className="mt-0.5 h-[18px] w-[18px] shrink-0 text-brand" />

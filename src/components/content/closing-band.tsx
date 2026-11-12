@@ -1,4 +1,5 @@
 import { Container } from "@/components/ui/container";
+import { TAGLINE } from "@/lib/constants";
 
 interface BandLink {
   label: string;
@@ -21,6 +22,7 @@ export function ClosingBand({ title, description, primary, secondary, secondaryS
       <Container>
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
           <div className="max-w-[790px]">
+            <p className="mb-3 text-[15px] font-semibold text-[#93C5FD] md:text-[16px]">{TAGLINE}</p>
             <h2 className={`text-balance font-display text-[28px] font-extrabold leading-[1.1] md:text-[36px] ${secondaryStyle === "light" ? "lg:text-[40px]" : ""}`}>{title}</h2>
             {description && (
               <p className={`mt-3 text-[16px] leading-[1.6] text-[#D1D5DB] md:text-[17px] ${secondaryStyle === "outline" ? "max-w-[560px]" : ""}`}>{description}</p>
