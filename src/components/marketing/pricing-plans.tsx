@@ -19,10 +19,30 @@ type ServiceTier = {
   price: string;
   period: string;
   description: string;
+  /** Compute for the tier, from the build engine's tier specs. */
+  specs: string[];
   badge?: string;
   cta?: string;
   primary?: boolean;
 };
+
+/** What a service has on every tier, Free included. */
+export const serviceIncludes = [
+  "Its own PostgreSQL database",
+  "A REST API with OpenAPI docs",
+  "The code in your GitHub repository, in TypeScript, Python, or Go",
+  "Migrations generated and tested before each deploy",
+  "TypeScript SDK and API keys",
+  "Bring your own auth: Auth0, Clerk, Cognito, or Better Auth",
+];
+
+/** What a paid tier adds to a service, on top of more compute. */
+export const paidTierAdds = [
+  "Commercial use",
+  "A database backup before every deploy",
+  "Schema rollback",
+  "Staging environment as an add-on",
+];
 
 export const workspacePlans: Plan[] = [
   {
@@ -30,7 +50,14 @@ export const workspacePlans: Plan[] = [
     price: "$0",
     period: "per workspace",
     description: "Bring the whole team. Everyone in the workspace can build and deploy. Roles are not managed on Free.",
-    features: ["Unlimited members", "Everyone can build and deploy", "One free hosted service"],
+    features: [
+      "Unlimited members",
+      "Everyone can build and deploy",
+      "One free hosted service",
+      "AI schema builder, 50K tokens a month",
+      "Export the code and run it anywhere",
+      "Not for commercial use",
+    ],
     cta: "Start building",
     href: APP_URL,
   },
@@ -40,7 +67,16 @@ export const workspacePlans: Plan[] = [
     period: "per month, flat",
     description:
       "Run paid services and use them commercially. Includes a $10 monthly compute credit, enough for one Starter service.",
-    features: ["Everything in Free", "Paid service tiers", "Commercial use", "$10 compute credit for one production service"],
+    features: [
+      "Everything in Free",
+      "Paid service tiers, Starter to Large",
+      "Commercial use",
+      "$10 compute credit for one production service",
+      "Database backup before every deploy",
+      "Schema rollback",
+      "Staging environments as an add-on",
+      "AI schema builder, 100K tokens a month",
+    ],
     cta: "Start with Pro",
     href: APP_URL,
   },
@@ -49,7 +85,13 @@ export const workspacePlans: Plan[] = [
     price: "$99",
     period: "per month, flat",
     description: "Control who can do what once the team grows. No per-seat charge.",
-    features: ["Everything in Pro", "Roles and permissions"],
+    features: [
+      "Everything in Pro",
+      "Roles and permissions",
+      "Per-service member access",
+      "Data export from the Data tab",
+      "Flat price, no per-seat charge",
+    ],
     cta: "Start a team",
     href: APP_URL,
   },
@@ -65,6 +107,8 @@ export const businessPlan: Plan = {
     "Everything in Team",
     "DevOps as a service",
     "Run in Apso's cloud or your own",
+    "Dedicated databases",
+    "SOC 2, HIPAA, and ISO compliance support",
     "Professional services available",
   ],
   cta: "Talk to sales",
@@ -77,6 +121,7 @@ export const serviceTiers: ServiceTier[] = [
     price: "$0",
     period: "one per owner",
     description: "Deploy a backend to try it out. Not for commercial use.",
+    specs: ["512 MB API memory", "1 GB database memory", "20 requests a second"],
     cta: "Deploy for free",
   },
   {
@@ -84,6 +129,7 @@ export const serviceTiers: ServiceTier[] = [
     price: "$10",
     period: "per service / month",
     description: "Run a first production service with the operational basics handled by Apso.",
+    specs: ["512 MB API memory", "1 GB database memory", "20 requests a second"],
     badge: "Covered by the Pro credit",
     cta: "Build a production service",
     primary: true,
@@ -93,13 +139,15 @@ export const serviceTiers: ServiceTier[] = [
     price: "$15",
     period: "per service / month",
     description: "Small allows more traffic than Starter, for lightweight APIs and MVPs.",
+    specs: ["512 MB API memory", "1 GB database memory", "50 requests a second"],
     cta: "Scale a service",
   },
   {
     name: "Medium",
     price: "$60",
     period: "per service / month",
-    description: "Medium gives a service more resources than Small.",
+    description: "Medium doubles the API memory and lets the database scale up under load.",
+    specs: ["1 GB API memory", "Database scales to 4 GB memory", "150 requests a second"],
     cta: "Scale a service",
   },
   {
@@ -107,6 +155,7 @@ export const serviceTiers: ServiceTier[] = [
     price: "$110",
     period: "per service / month",
     description: "Large gives a service the most resources Apso offers.",
+    specs: ["2 GB API memory", "Database scales to 8 GB memory", "400 requests a second"],
     cta: "Scale a service",
   },
 ];
@@ -182,7 +231,11 @@ export function PricingPlans() {
             You choose a tier for each service. Paid tiers need a Pro, Team, or Business workspace. A staging copy of a
             paid service is an add-on at the same prices, from $10 per month.
           </p>
-          <div className="mt-7 grid overflow-hidden rounded-[12px] border border-line-1 bg-bg-0 md:grid-cols-2 lg:grid-cols-1">
+          <div className="mt-7 grid gap-5 lg:grid-cols-3">
+            <IncludesCard title="Every service includes" items={serviceIncludes} className="lg:col-span-2" columns />
+            <IncludesCard title="Every paid tier adds" items={paidTierAdds} />
+          </div>
+          <div className="mt-5 grid overflow-hidden rounded-[12px] border border-line-1 bg-bg-0 md:grid-cols-2 lg:grid-cols-1">
             {serviceTiers.map((tier, i) => (
               <TierRow key={tier.name} tier={tier} index={i} />
             ))}
@@ -243,6 +296,32 @@ function PlanCard({ plan, primary, dark }: { plan: Plan; primary?: boolean; dark
   );
 }
 
+function IncludesCard({
+  title,
+  items,
+  columns,
+  className = "",
+}: {
+  title: string;
+  items: string[];
+  columns?: boolean;
+  className?: string;
+}) {
+  return (
+    <div className={`rounded-[12px] border border-line-1 bg-bg-0 p-6 ${className}`}>
+      <h3 className="font-display text-[18px] font-bold text-fg-1">{title}</h3>
+      <ul className={`mt-4 grid gap-3 ${columns ? "sm:grid-cols-2" : ""}`}>
+        {items.map((item) => (
+          <li key={item} className="flex items-start gap-2.5 text-[15px] leading-[1.5] text-fg-3">
+            <Check aria-hidden="true" className="mt-0.5 h-[18px] w-[18px] shrink-0 text-brand" />
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function TierRow({ tier, index }: { tier: ServiceTier; index: number }) {
   return (
     <div
@@ -264,7 +343,14 @@ function TierRow({ tier, index }: { tier: ServiceTier; index: number }) {
           <span className="text-[13px] text-fg-4">{tier.period}</span>
         </p>
       </div>
-      <p className="flex-1 text-[15px] leading-[1.6] text-fg-3">{tier.description}</p>
+      <div className="flex-1">
+        <p className="text-[15px] leading-[1.6] text-fg-3">{tier.description}</p>
+        <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-fg-4">
+          {tier.specs.map((spec) => (
+            <li key={spec}>{spec}</li>
+          ))}
+        </ul>
+      </div>
       {tier.cta ? (
         <a href={APP_URL} {...external(APP_URL)} className={`w-full lg:w-auto ${tier.primary ? btnPrimary : btnOutline}`}>
           {tier.cta}
